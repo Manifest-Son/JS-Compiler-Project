@@ -1,25 +1,20 @@
-
 ---
 events:
-  -
-    kind: "message-v1"
+  - kind: "message-v1"
     backtrace:
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeDetermineSystem.cmake:205 (message)"
       - "CMakeLists.txt:2 (project)"
     message: |
       The system is: Windows - 10.0.22631 - AMD64
-
 ---
 events:
-  -
-    kind: "message-v1"
+  - kind: "message-v1"
     backtrace:
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeDetermineSystem.cmake:205 (message)"
       - "CMakeLists.txt:2 (project)"
     message: |
       The system is: Windows - 10.0.22631 - AMD64
-  -
-    kind: "message-v1"
+  - kind: "message-v1"
     backtrace:
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
@@ -30,18 +25,17 @@ events:
       Compiler: C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/gcc.exe 
       Build flags: 
       Id flags:  
-      
+
       The output was:
       0
-      
-      
+
+
       Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.exe"
-      
+
       The C compiler identification is GNU, found in:
         C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/CMakeFiles/3.30.5/CompilerIdC/a.exe
-      
-  -
-    kind: "message-v1"
+
+  - kind: "message-v1"
     backtrace:
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
@@ -52,18 +46,17 @@ events:
       Compiler: C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/g++.exe 
       Build flags: 
       Id flags:  
-      
+
       The output was:
       0
-      
-      
+
+
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.exe"
-      
+
       The CXX compiler identification is GNU, found in:
         C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/CMakeFiles/3.30.5/CompilerIdCXX/a.exe
-      
-  -
-    kind: "try_compile-v1"
+
+  - kind: "try_compile-v1"
     backtrace:
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
@@ -82,7 +75,7 @@ events:
       cached: true
       stdout: |
         Change Dir: 'C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-8xll6m'
-        
+
         Run Build Command(s): "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/ninja/win/x64/ninja.exe" -v cmTC_69fa2
         [1/2] C:\\PROGRA~1\\JETBRA~1\\CLION2~1.1\\bin\\mingw\\bin\\gcc.exe   -fdiagnostics-color=always   -v -o CMakeFiles/cmTC_69fa2.dir/CMakeCCompilerABI.c.obj -c "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeCCompilerABI.c"
         Using built-in specs.
@@ -134,10 +127,9 @@ events:
         C:\\Program Files\\JetBrains\\CLion 2024.3.1.1\\bin\\mingw\\bin/ld.exe -m i386pep -Bdynamic -o cmTC_69fa2.exe C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/crtbegin.o -LC:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0 -LC:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc -LC:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../../../x86_64-w64-mingw32/lib/../lib -LC:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../../../lib -LC:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../../../x86_64-w64-mingw32/lib -LC:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../.. -v CMakeFiles/cmTC_69fa2.dir/CMakeCCompilerABI.c.obj --out-implib libcmTC_69fa2.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lgcc_eh -lmoldname -lmingwex -lmsvcrt -lkernel32 -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -liconv -lmingw32 -lgcc -lgcc_eh -lmoldname -lmingwex -lmsvcrt -lkernel32 C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../../../x86_64-w64-mingw32/lib/../lib/default-manifest.o C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/crtend.o\x0d
         GNU ld (GNU Binutils) 2.40\x0d
         COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_69fa2.exe' '-mtune=generic' '-march=nocona' '-dumpdir' 'cmTC_69fa2.'\x0d
-        
+
       exitCode: 0
-  -
-    kind: "message-v1"
+  - kind: "message-v1"
     backtrace:
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:182 (message)"
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
@@ -156,10 +148,8 @@ events:
         collapse include dir [C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed] ==> [C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed]
         collapse include dir [C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../../../x86_64-w64-mingw32/include] ==> [C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/x86_64-w64-mingw32/include]
         implicit include dirs: [C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include;C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/include;C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed;C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/x86_64-w64-mingw32/include]
-      
-      
-  -
-    kind: "message-v1"
+
+  - kind: "message-v1"
     backtrace:
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:218 (message)"
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
@@ -240,10 +230,8 @@ events:
         implicit objs: []
         implicit dirs: []
         implicit fwks: []
-      
-      
-  -
-    kind: "message-v1"
+
+  - kind: "message-v1"
     backtrace:
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/Internal/CMakeDetermineLinkerId.cmake:40 (message)"
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:255 (cmake_determine_linker_id)"
@@ -252,8 +240,7 @@ events:
     message: |
       Running the C compiler's linker: "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/ld.exe" "-v"
       GNU ld (GNU Binutils) 2.40
-  -
-    kind: "try_compile-v1"
+  - kind: "try_compile-v1"
     backtrace:
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
@@ -273,7 +260,7 @@ events:
       cached: true
       stdout: |
         Change Dir: 'C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-qbu6qh'
-        
+
         Run Build Command(s): "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/ninja/win/x64/ninja.exe" -v cmTC_9524f
         [1/2] C:\\PROGRA~1\\JETBRA~1\\CLION2~1.1\\bin\\mingw\\bin\\G__~1.EXE   -fdiagnostics-color=always   -v -o CMakeFiles/cmTC_9524f.dir/CMakeCXXCompilerABI.cpp.obj -c "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeCXXCompilerABI.cpp"
         Using built-in specs.
@@ -331,10 +318,9 @@ events:
         C:\\Program Files\\JetBrains\\CLion 2024.3.1.1\\bin\\mingw\\bin/ld.exe -m i386pep -Bdynamic -o cmTC_9524f.exe C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../../../x86_64-w64-mingw32/lib/../lib/crt2.o C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/crtbegin.o -LC:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0 -LC:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc -LC:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../../../x86_64-w64-mingw32/lib/../lib -LC:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../../../lib -LC:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../../../x86_64-w64-mingw32/lib -LC:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../.. -v CMakeFiles/cmTC_9524f.dir/CMakeCXXCompilerABI.cpp.obj --out-implib libcmTC_9524f.dll.a --major-image-version 0 --minor-image-version 0 -lstdc++ -lmingw32 -lgcc_s -lgcc -lmoldname -lmingwex -lmsvcrt -lkernel32 -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -liconv -lmingw32 -lgcc_s -lgcc -lmoldname -lmingwex -lmsvcrt -lkernel32 C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../../../x86_64-w64-mingw32/lib/../lib/default-manifest.o C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/crtend.o
         GNU ld (GNU Binutils) 2.40
         COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_9524f.exe' '-shared-libgcc' '-mtune=generic' '-march=nocona' '-dumpdir' 'cmTC_9524f.'\x0d
-        
+
       exitCode: 0
-  -
-    kind: "message-v1"
+  - kind: "message-v1"
     backtrace:
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:182 (message)"
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
@@ -359,10 +345,8 @@ events:
         collapse include dir [C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed] ==> [C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed]
         collapse include dir [C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/../lib/gcc/x86_64-w64-mingw32/13.1.0/../../../../x86_64-w64-mingw32/include] ==> [C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/x86_64-w64-mingw32/include]
         implicit include dirs: [C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++;C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32;C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward;C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include;C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/include;C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed;C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/x86_64-w64-mingw32/include]
-      
-      
-  -
-    kind: "message-v1"
+
+  - kind: "message-v1"
     backtrace:
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:218 (message)"
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
@@ -449,10 +433,8 @@ events:
         implicit objs: []
         implicit dirs: []
         implicit fwks: []
-      
-      
-  -
-    kind: "message-v1"
+
+  - kind: "message-v1"
     backtrace:
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/Internal/CMakeDetermineLinkerId.cmake:40 (message)"
       - "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/CMakeDetermineCompilerABI.cmake:255 (cmake_determine_linker_id)"
@@ -461,4 +443,3 @@ events:
     message: |
       Running the CXX compiler's linker: "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/ld.exe" "-v"
       GNU ld (GNU Binutils) 2.40
-...
