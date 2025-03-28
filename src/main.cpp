@@ -14,10 +14,18 @@ int main() {
   )";
 
   Lexer lexer(source_code);
-  std::vector<Token> tokens = lexer.tokenize();
 
-  for (const Token& token : tokens) {
-    std::cout << "Token: " << token.value << " Line: " << token.line << std::endl;
+  for (std::vector<Token> tokens = lexer.tokenize(); const Token& token : tokens) {
+    std::cout << "Token: ";
+      std::visit([](const auto& v) {
+    if constexpr (!std::is_same_v<std::decay_t<decltype(v)>, std::monostate>) {
+        std::cout << v;
+    } else {
+        std::cout << "null";
+    }
+}, token.value);
+
+      std::cout << "Line: " << token.line << std::endl;
   }
   return 0;
 }

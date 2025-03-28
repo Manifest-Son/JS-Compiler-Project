@@ -69,6 +69,7 @@ include CMakeFiles/JS_Compiler_Final_Project.dir/progress.make
 include CMakeFiles/JS_Compiler_Final_Project.dir/flags.make
 
 CMakeFiles/JS_Compiler_Final_Project.dir/src/main.cpp.obj: CMakeFiles/JS_Compiler_Final_Project.dir/flags.make
+CMakeFiles/JS_Compiler_Final_Project.dir/src/main.cpp.obj: CMakeFiles/JS_Compiler_Final_Project.dir/includes_CXX.rsp
 CMakeFiles/JS_Compiler_Final_Project.dir/src/main.cpp.obj: C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/src/main.cpp
 CMakeFiles/JS_Compiler_Final_Project.dir/src/main.cpp.obj: CMakeFiles/JS_Compiler_Final_Project.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/JS_Compiler_Final_Project.dir/src/main.cpp.obj"
@@ -83,6 +84,7 @@ CMakeFiles/JS_Compiler_Final_Project.dir/src/main.cpp.s: cmake_force
 	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\src\main.cpp -o CMakeFiles\JS_Compiler_Final_Project.dir\src\main.cpp.s
 
 CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.obj: CMakeFiles/JS_Compiler_Final_Project.dir/flags.make
+CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.obj: CMakeFiles/JS_Compiler_Final_Project.dir/includes_CXX.rsp
 CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.obj: C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/src/lexer.cpp
 CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.obj: CMakeFiles/JS_Compiler_Final_Project.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.obj"
@@ -96,21 +98,38 @@ CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.s"
 	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\src\lexer.cpp -o CMakeFiles\JS_Compiler_Final_Project.dir\src\lexer.cpp.s
 
+CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.obj: CMakeFiles/JS_Compiler_Final_Project.dir/flags.make
+CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.obj: CMakeFiles/JS_Compiler_Final_Project.dir/includes_CXX.rsp
+CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.obj: C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/src/parser.cpp
+CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.obj: CMakeFiles/JS_Compiler_Final_Project.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.obj"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.obj -MF CMakeFiles\JS_Compiler_Final_Project.dir\src\parser.cpp.obj.d -o CMakeFiles\JS_Compiler_Final_Project.dir\src\parser.cpp.obj -c C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\src\parser.cpp
+
+CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.i"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\src\parser.cpp > CMakeFiles\JS_Compiler_Final_Project.dir\src\parser.cpp.i
+
+CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.s"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\src\parser.cpp -o CMakeFiles\JS_Compiler_Final_Project.dir\src\parser.cpp.s
+
 # Object files for target JS_Compiler_Final_Project
 JS_Compiler_Final_Project_OBJECTS = \
 "CMakeFiles/JS_Compiler_Final_Project.dir/src/main.cpp.obj" \
-"CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.obj"
+"CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.obj" \
+"CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.obj"
 
 # External object files for target JS_Compiler_Final_Project
 JS_Compiler_Final_Project_EXTERNAL_OBJECTS =
 
 JS_Compiler_Final_Project.exe: CMakeFiles/JS_Compiler_Final_Project.dir/src/main.cpp.obj
 JS_Compiler_Final_Project.exe: CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.obj
+JS_Compiler_Final_Project.exe: CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.obj
 JS_Compiler_Final_Project.exe: CMakeFiles/JS_Compiler_Final_Project.dir/build.make
 JS_Compiler_Final_Project.exe: CMakeFiles/JS_Compiler_Final_Project.dir/linkLibs.rsp
 JS_Compiler_Final_Project.exe: CMakeFiles/JS_Compiler_Final_Project.dir/objects1.rsp
 JS_Compiler_Final_Project.exe: CMakeFiles/JS_Compiler_Final_Project.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable JS_Compiler_Final_Project.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable JS_Compiler_Final_Project.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\JS_Compiler_Final_Project.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

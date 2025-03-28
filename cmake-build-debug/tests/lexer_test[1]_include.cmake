@@ -1,0 +1,5 @@
+if(EXISTS "C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/tests/lexer_test[1]_tests.cmake")
+  include("C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/tests/lexer_test[1]_tests.cmake")
+else()
+  add_test(lexer_test_NOT_BUILT lexer_test_NOT_BUILT)
+endif()

@@ -10,6 +10,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/src/lexer.cpp" "CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.obj" "gcc" "CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.obj.d"
   "C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/src/main.cpp" "CMakeFiles/JS_Compiler_Final_Project.dir/src/main.cpp.obj" "gcc" "CMakeFiles/JS_Compiler_Final_Project.dir/src/main.cpp.obj.d"
+  "C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/src/parser.cpp" "CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.obj" "gcc" "CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.obj.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

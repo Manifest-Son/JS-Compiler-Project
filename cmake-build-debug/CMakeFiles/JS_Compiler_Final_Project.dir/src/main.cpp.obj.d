@@ -156,4 +156,9 @@ CMakeFiles/JS_Compiler_Final_Project.dir/src/main.cpp.obj: \
  C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/stl_vector.h \
  C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/stl_bvector.h \
  C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/vector.tcc \
- C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/include/token.h
+ C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/include/token.h \
+ C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/utility \
+ C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/stl_relops.h \
+ C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/variant \
+ C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/enable_special_members.h \
+ C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/parse_numbers.h
