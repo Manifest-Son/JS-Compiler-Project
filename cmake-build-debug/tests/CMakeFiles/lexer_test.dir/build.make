@@ -83,21 +83,38 @@ tests/CMakeFiles/lexer_test.dir/lexer/lexer_test.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/lexer_test.dir/lexer/lexer_test.cc.s"
 	cd /d C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\tests && C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\tests\lexer\lexer_test.cc -o CMakeFiles\lexer_test.dir\lexer\lexer_test.cc.s
 
+tests/CMakeFiles/lexer_test.dir/__/src/ast.cpp.obj: tests/CMakeFiles/lexer_test.dir/flags.make
+tests/CMakeFiles/lexer_test.dir/__/src/ast.cpp.obj: tests/CMakeFiles/lexer_test.dir/includes_CXX.rsp
+tests/CMakeFiles/lexer_test.dir/__/src/ast.cpp.obj: C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/src/ast.cpp
+tests/CMakeFiles/lexer_test.dir/__/src/ast.cpp.obj: tests/CMakeFiles/lexer_test.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object tests/CMakeFiles/lexer_test.dir/__/src/ast.cpp.obj"
+	cd /d C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\tests && C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT tests/CMakeFiles/lexer_test.dir/__/src/ast.cpp.obj -MF CMakeFiles\lexer_test.dir\__\src\ast.cpp.obj.d -o CMakeFiles\lexer_test.dir\__\src\ast.cpp.obj -c C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\src\ast.cpp
+
+tests/CMakeFiles/lexer_test.dir/__/src/ast.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/lexer_test.dir/__/src/ast.cpp.i"
+	cd /d C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\tests && C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\src\ast.cpp > CMakeFiles\lexer_test.dir\__\src\ast.cpp.i
+
+tests/CMakeFiles/lexer_test.dir/__/src/ast.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/lexer_test.dir/__/src/ast.cpp.s"
+	cd /d C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\tests && C:\PROGRA~1\JETBRA~1\CLION2~1.1\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\src\ast.cpp -o CMakeFiles\lexer_test.dir\__\src\ast.cpp.s
+
 # Object files for target lexer_test
 lexer_test_OBJECTS = \
-"CMakeFiles/lexer_test.dir/lexer/lexer_test.cc.obj"
+"CMakeFiles/lexer_test.dir/lexer/lexer_test.cc.obj" \
+"CMakeFiles/lexer_test.dir/__/src/ast.cpp.obj"
 
 # External object files for target lexer_test
 lexer_test_EXTERNAL_OBJECTS =
 
 tests/lexer_test.exe: tests/CMakeFiles/lexer_test.dir/lexer/lexer_test.cc.obj
+tests/lexer_test.exe: tests/CMakeFiles/lexer_test.dir/__/src/ast.cpp.obj
 tests/lexer_test.exe: tests/CMakeFiles/lexer_test.dir/build.make
 tests/lexer_test.exe: lib/libgtest_main.a
 tests/lexer_test.exe: lib/libgtest.a
 tests/lexer_test.exe: tests/CMakeFiles/lexer_test.dir/linkLibs.rsp
 tests/lexer_test.exe: tests/CMakeFiles/lexer_test.dir/objects1.rsp
 tests/lexer_test.exe: tests/CMakeFiles/lexer_test.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable lexer_test.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable lexer_test.exe"
 	cd /d C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\lexer_test.dir\link.txt --verbose=$(VERBOSE)
 	cd /d C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\tests && "C:\Program Files\JetBrains\CLion 2024.3.1.1\bin\cmake\win\x64\bin\cmake.exe" -D TEST_TARGET=lexer_test -D TEST_EXECUTABLE=C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/tests/lexer_test.exe -D TEST_EXECUTOR= -D TEST_WORKING_DIR=C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/tests -D TEST_EXTRA_ARGS= -D TEST_PROPERTIES= -D TEST_PREFIX= -D TEST_SUFFIX= -D TEST_FILTER= -D NO_PRETTY_TYPES=FALSE -D NO_PRETTY_VALUES=FALSE -D TEST_LIST=lexer_test_TESTS -D CTEST_FILE=C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/tests/lexer_test[1]_tests.cmake -D TEST_DISCOVERY_TIMEOUT=5 -D TEST_XML_OUTPUT_DIR= -P "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/GoogleTestAddTests.cmake"
 

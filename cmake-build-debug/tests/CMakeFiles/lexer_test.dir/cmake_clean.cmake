@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/lexer_test.dir/__/src/ast.cpp.obj"
+  "CMakeFiles/lexer_test.dir/__/src/ast.cpp.obj.d"
   "CMakeFiles/lexer_test.dir/lexer/lexer_test.cc.obj"
   "CMakeFiles/lexer_test.dir/lexer/lexer_test.cc.obj.d"
   "lexer_test.exe"

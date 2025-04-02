@@ -184,6 +184,30 @@ lexer_test/fast:
 	cd /d C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\lexer_test.dir\build.make tests/CMakeFiles/lexer_test.dir/build
 .PHONY : lexer_test/fast
 
+__/src/ast.obj: __/src/ast.cpp.obj
+.PHONY : __/src/ast.obj
+
+# target to build an object file
+__/src/ast.cpp.obj:
+	cd /d C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\lexer_test.dir\build.make tests/CMakeFiles/lexer_test.dir/__/src/ast.cpp.obj
+.PHONY : __/src/ast.cpp.obj
+
+__/src/ast.i: __/src/ast.cpp.i
+.PHONY : __/src/ast.i
+
+# target to preprocess a source file
+__/src/ast.cpp.i:
+	cd /d C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\lexer_test.dir\build.make tests/CMakeFiles/lexer_test.dir/__/src/ast.cpp.i
+.PHONY : __/src/ast.cpp.i
+
+__/src/ast.s: __/src/ast.cpp.s
+.PHONY : __/src/ast.s
+
+# target to generate assembly for a file
+__/src/ast.cpp.s:
+	cd /d C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug && $(MAKE) $(MAKESILENT) -f tests\CMakeFiles\lexer_test.dir\build.make tests/CMakeFiles/lexer_test.dir/__/src/ast.cpp.s
+.PHONY : __/src/ast.cpp.s
+
 lexer/lexer_test.obj: lexer/lexer_test.cc.obj
 .PHONY : lexer/lexer_test.obj
 
@@ -222,6 +246,9 @@ help:
 	@echo ... rebuild_cache
 	@echo ... test
 	@echo ... lexer_test
+	@echo ... __/src/ast.obj
+	@echo ... __/src/ast.i
+	@echo ... __/src/ast.s
 	@echo ... lexer/lexer_test.obj
 	@echo ... lexer/lexer_test.i
 	@echo ... lexer/lexer_test.s

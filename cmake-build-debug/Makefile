@@ -248,6 +248,30 @@ lexer_test/fast:
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\lexer_test.dir\build.make tests/CMakeFiles/lexer_test.dir/build
 .PHONY : lexer_test/fast
 
+src/ast.obj: src/ast.cpp.obj
+.PHONY : src/ast.obj
+
+# target to build an object file
+src/ast.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/ast.cpp.obj
+.PHONY : src/ast.cpp.obj
+
+src/ast.i: src/ast.cpp.i
+.PHONY : src/ast.i
+
+# target to preprocess a source file
+src/ast.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/ast.cpp.i
+.PHONY : src/ast.cpp.i
+
+src/ast.s: src/ast.cpp.s
+.PHONY : src/ast.s
+
+# target to generate assembly for a file
+src/ast.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/ast.cpp.s
+.PHONY : src/ast.cpp.s
+
 src/lexer.obj: src/lexer.cpp.obj
 .PHONY : src/lexer.obj
 
@@ -339,6 +363,9 @@ help:
 	@echo ... gtest
 	@echo ... gtest_main
 	@echo ... lexer_test
+	@echo ... src/ast.obj
+	@echo ... src/ast.i
+	@echo ... src/ast.s
 	@echo ... src/lexer.obj
 	@echo ... src/lexer.i
 	@echo ... src/lexer.s

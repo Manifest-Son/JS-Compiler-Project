@@ -1,25 +1,60 @@
 #include "../include/lexer.h"
 #include <cctype>  // For isdigit, isalpha, etc.
 #include <unordered_set> // For keywords
+#include <unordered_map> // For common error suggestions
 
-// Javascript Keywords
+// Complete list of Javascript Keywords and Reserved Words
 const std::unordered_set<std::string> keywords = {
-    "let", "if", "else", "function", "return", "for", "while", 
-    "break", "continue", "true", "false", "null", "const", "var"
+    // Keywords
+    "break", "case", "catch", "class", "const", "continue", "debugger",
+    "default", "delete", "do", "else", "export", "extends", "finally",
+    "for", "function", "if", "import", "in", "instanceof", "new",
+    "return", "super", "switch", "this", "throw", "try", "typeof",
+    "var", "void", "while", "with", "yield",
+
+    // Future reserved words
+    "enum", "implements", "interface", "let", "package", "private",
+    "protected", "public", "static",
+
+    // Literals
+    "true", "false", "null", "undefined",
+
+    // Special identifiers
+    "arguments", "eval", "async", "await"
 };
 
-Lexer::Lexer(const std::string& source) : source(source), position(0), line(1) {}
+// Map of common errors to suggestions
+const std::unordered_map<std::string, std::string> errorSuggestions = {
+    {"Unterminated string", "Add matching quote to close the string"},
+    {"Unterminated multi-line comment", "Add */ to close the comment"},
+    {"Invalid number format", "Check decimal point usage and digit formatting"},
+    {"Invalid identifier", "Identifiers must start with a letter, underscore, or dollar sign"}
+};
+
+Lexer::Lexer(const std::string& source) 
+    : source(source), position(0), line(1), column(1), errorReporter(source) {}
+
+// Check if character is valid for starting an identifier
+bool isIdentifierStart(char c) {
+    return isalpha(c) || c == '_' || c == '$';
+}
+
+// Check if character is valid inside an identifier
+bool isIdentifierPart(char c) {
+    return isalnum(c) || c == '_' || c == '$';
+}
 
 // Main function to tokenize input
 std::vector<Token> Lexer::tokenize() {
   std::vector<Token> tokens;
 
   while (position < source.length()) {
+    startToken(); // Track position at start of token
     char current = peek();
     
     if (isspace(current)) {
       skipWhitespace();
-    } else if (isalpha(current) || current == '_') {
+    } else if (isIdentifierStart(current)) {
       tokens.push_back(identifier());
     } else if (isdigit(current)) {
       tokens.push_back(number());
@@ -28,19 +63,20 @@ std::vector<Token> Lexer::tokenize() {
     } else if (current == '/' && (peekNext() == '/' || peekNext() == '*')) {
       // Handle comments
       tokens.push_back(handleComment());
-    } else if (current == '(' || current == ')' || 
-               current == '{' || current == '}' || 
+    } else if (current == '(' || current == ')' ||
+               current == '{' || current == '}' ||
                current == '[' || current == ']' ||
                current == ',') {
-      // Handle common grouping symbols
+      // Handle common grouping symbols - add explicit value
       advance();
-      tokens.push_back(Token(SYMBOL, std::string(1, current), line));
+      std::string symbolStr(1, current);
+      tokens.push_back(Token(SYMBOL, symbolStr, line, symbolStr));
     } else if (current == ';') {
       advance();
       tokens.push_back(Token(SYMBOL, ";", line, ";"));
-    } else if (current == '+' || current == '-' || 
-               current == '*' || current == '/' || 
-               current == '=' || current == '!' || 
+    } else if (current == '+' || current == '-' ||
+               current == '*' || current == '/' ||
+               current == '=' || current == '!' ||
                current == '<' || current == '>' ||
                current == '&' || current == '|') {
       tokens.push_back(symbol());
@@ -50,8 +86,14 @@ std::vector<Token> Lexer::tokenize() {
     }
   }
 
-  tokens.push_back(Token(END_OF_FILE, "EOF", line));
+  tokens.push_back(Token(END_OF_FILE, "EOF", line, "EOF"));
   return tokens;
+}
+
+// Track position at start of token for error reporting
+void Lexer::startToken() {
+    startLine = line;
+    startColumn = column;
 }
 
 // Look at the current character without advancing
@@ -68,6 +110,9 @@ char Lexer::peekNext() {
 char Lexer::advance() {
   if (position < source.length() && source[position] == '\n') {
     line++;
+    column = 1;
+  } else {
+    column++;
   }
   return (position < source.length()) ? source[position++] : '\0';
 }
@@ -82,12 +127,17 @@ bool Lexer::match(char expected) {
 // Skip whitespace characters and track new lines
 void Lexer::skipWhitespace() {
   while (position < source.length() && isspace(peek())) {
-    if (peek() == '\n') line++;
+    if (peek() == '\n') {
+      line++;
+      column = 1;
+    } else {
+      column++;
+    }
     position++;
   }
 }
 
-// Handle strings
+// Handle strings with improved error handling
 Token Lexer::string() {
   char quote = advance(); // Skip the opening quote (can be ' or ")
   size_t start = position;
@@ -95,6 +145,7 @@ Token Lexer::string() {
   while (peek() != quote && peek() != '\0') {
     if (peek() == '\n') {
       line++;
+      column = 1;
     } else if (peek() == '\\' && peekNext() == quote) {
       // Handle escaped quotes
       advance(); // Skip the backslash
@@ -106,17 +157,22 @@ Token Lexer::string() {
     }
   }
 
-  if (peek() == '\0') return errorToken("Unterminated string");
+  if (peek() == '\0') {
+    std::string message = "Unterminated string";
+    errorReporter.report(ErrorSeverity::ERROR, startLine, startColumn, 
+                         message, errorSuggestions.at("Unterminated string"));
+    return errorToken(message);
+  }
 
   std::string value = source.substr(start, position - start);
   advance(); // Skip the closing quote
-  return Token(TokenType::STRING, value, line, value);
+  return Token(TokenType::STRING, value, startLine, value);
 }
 
 // Handle identifiers and keywords
 Token Lexer::identifier() {
   size_t start = position;
-  while (isalnum(peek()) || peek() == '_') advance();
+  while (isIdentifierPart(peek())) advance();
 
   std::string value = source.substr(start, position - start);
   TokenType type = keywords.count(value) ? TokenType::KEYWORD : TokenType::IDENTIFIER;
@@ -128,9 +184,12 @@ Token Lexer::identifier() {
     return Token(type, value, line, false);
   } else if (value == "null") {
     return Token(type, value, line, std::monostate{});
+  } else if (value == "undefined") {
+    return Token(type, value, line, std::monostate{});
   }
 
-  return Token(type, value, line);
+  // Always provide the value for identifiers
+  return Token(type, value, line, value);
 }
 
 // Handle numbers (integers and floats)
@@ -149,7 +208,7 @@ Token Lexer::number() {
   return Token(TokenType::NUMBER, lexeme, line, value);
 }
 
-// Handle symbols and operators - renamed from symbol() to operator()
+// Handle symbols and operators
 Token Lexer::symbol() {
   char current = advance();
   std::string value(1, current);
@@ -193,10 +252,10 @@ Token Lexer::symbol() {
     value += "=";
   }
 
-  return Token(TokenType::OPERATOR, value, line);
+  return Token(TokenType::OPERATOR, value, line, value);
 }
 
-// Handle comments (both single-line and multi-line)
+// Handle comments with improved error handling
 Token Lexer::handleComment() {
   advance(); // Skip the first '/'
 
@@ -208,7 +267,7 @@ Token Lexer::handleComment() {
     while (peek() != '\n' && peek() != '\0') advance();
 
     std::string comment = source.substr(start, position - start);
-    return Token(TokenType::COMMENT, comment, line);
+    return Token(TokenType::COMMENT, comment, startLine, comment);
   } else if (peek() == '*') {
     // Multi-line comment
     advance(); // Skip the '*'
@@ -219,21 +278,37 @@ Token Lexer::handleComment() {
       advance();
     }
 
-    if (peek() == '\0') return errorToken("Unterminated multi-line comment");
+    if (peek() == '\0') {
+      std::string message = "Unterminated multi-line comment";
+      errorReporter.report(ErrorSeverity::ERROR, this->startLine, startColumn, 
+                           message, errorSuggestions.at("Unterminated multi-line comment"));
+      return errorToken(message);
+    }
 
     std::string comment = source.substr(start, position - start);
     advance(); // Skip the '*'
     advance(); // Skip the '/'
 
-    return Token(TokenType::COMMENT, comment, startLine);
+    return Token(TokenType::COMMENT, comment, startLine, comment);
   }
 
   // If we get here, it's just a division operator
-  return Token(TokenType::OPERATOR, "/", line);
+  return Token(TokenType::OPERATOR, "/", startLine, "/");
 }
 
-// Handle errors
+// Handle errors with better reporting
 Token Lexer::errorToken(const std::string& message) {
-  return Token(TokenType::ERROR, message, line);
+  // If not already reported by specific handlers
+  if (message.find("Unterminated") == std::string::npos) {
+    std::string suggestion = "";
+    for (const auto& [error, fix] : errorSuggestions) {
+      if (message.find(error) != std::string::npos) {
+        suggestion = fix;
+        break;
+      }
+    }
+    errorReporter.report(ErrorSeverity::ERROR, startLine, startColumn, message, suggestion);
+  }
+  
+  return Token(TokenType::ERROR, message, startLine);
 }
-

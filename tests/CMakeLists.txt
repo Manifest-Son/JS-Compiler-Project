@@ -11,7 +11,8 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 # Add test executable
-add_executable(lexer_test lexer/lexer_test.cc)
+add_executable(lexer_test lexer/lexer_test.cc
+        ../src/ast.cpp)
 target_link_libraries(lexer_test gtest_main)
 
 # Discover tests

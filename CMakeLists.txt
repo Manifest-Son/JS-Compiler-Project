@@ -10,7 +10,8 @@ add_executable(JS_Compiler_Final_Project src/main.cpp
         include/ast.h
         include/parser.h
         include/parser_error.h
-        src/parser.cpp)
+        src/parser.cpp
+        src/ast.cpp)
 
 include(FetchContent)
 FetchContent_Declare(

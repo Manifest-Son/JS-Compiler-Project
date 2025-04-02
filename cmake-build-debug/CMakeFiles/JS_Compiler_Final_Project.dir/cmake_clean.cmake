@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/JS_Compiler_Final_Project.dir/src/ast.cpp.obj"
+  "CMakeFiles/JS_Compiler_Final_Project.dir/src/ast.cpp.obj.d"
   "CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.obj"
   "CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.obj.d"
   "CMakeFiles/JS_Compiler_Final_Project.dir/src/main.cpp.obj"

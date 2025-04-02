@@ -17,7 +17,7 @@ std::shared_ptr<Program> Parser::parse() {
         try {
             start = current; // Mark the start of each declaration
             statements.push_back(declaration());
-        } catch (ParseError& error) {
+        } catch (ParserError& error) {
             synchronize();
         }
     }
@@ -71,7 +71,7 @@ Token Parser::consume(TokenType type, const std::string& message) {
     throw error(peek(), message);
 }
 
-ParseError Parser::error(Token token, const std::string& message) {
+ParserError Parser::error(Token token, const std::string& message) {
     std::cerr << "Error at line " << token.line;
     if (token.type == END_OF_FILE) {
         std::cerr << " at end";
@@ -80,7 +80,7 @@ ParseError Parser::error(Token token, const std::string& message) {
     }
     std::cerr << ": " << message << std::endl;
     
-    return ParseError(message);
+    return ParserError(message);
 }
 
 void Parser::synchronize() {
