@@ -7,8 +7,9 @@
 #include "token.h"
 
 // Forward declarations
-class Expression;
-class Statement;
+class ExprVisitor;
+class StmtVisitor;
+class ASTVisitor;
 
 // Base AST node class
 class ASTNode {
@@ -20,12 +21,14 @@ public:
 class Expression : public ASTNode {
 public:
     ~Expression() override = default;
+    virtual void accept(ExprVisitor& visitor) const = 0;
 };
 
 // Literal expression (numbers, strings, booleans, null)
 class LiteralExpr final : public Expression {
 public:
     explicit LiteralExpr(Token token) : token(std::move(token)) {}
+    void accept(ExprVisitor& visitor) const override;
     Token token;
 };
 
@@ -33,6 +36,7 @@ public:
 class VariableExpr final : public Expression {
 public:
     explicit VariableExpr(Token name) : name(std::move(name)) {}
+    void accept(ExprVisitor& visitor) const override;
     Token name;
 };
 
@@ -42,6 +46,7 @@ public:
     BinaryExpr(std::shared_ptr<Expression> left, Token op, std::shared_ptr<Expression> right)
         : left(std::move(left)), op(std::move(op)), right(std::move(right)) {}
     
+    void accept(ExprVisitor& visitor) const override;
     std::shared_ptr<Expression> left;
     Token op;
     std::shared_ptr<Expression> right;
@@ -53,6 +58,7 @@ public:
     UnaryExpr(Token op, std::shared_ptr<Expression> right)
         : op(std::move(op)), right(std::move(right)) {}
     
+    void accept(ExprVisitor& visitor) const override;
     Token op;
     std::shared_ptr<Expression> right;
 };
@@ -61,6 +67,7 @@ public:
 class Statement : public ASTNode {
 public:
     ~Statement() override = default;
+    virtual void accept(StmtVisitor& visitor) const = 0;
 };
 
 // Expression statement (standalone expression)
@@ -69,6 +76,7 @@ public:
      explicit ExpressionStmt(std::shared_ptr<Expression> expression)
         : expression(std::move(expression)) {}
     
+    void accept(StmtVisitor& visitor) const override;
     std::shared_ptr<Expression> expression;
 };
 
@@ -78,6 +86,7 @@ public:
     VarDeclStmt(Token name, std::shared_ptr<Expression> initializer)
         : name(std::move(name)), initializer(std::move(initializer)) {}
     
+    void accept(StmtVisitor& visitor) const override;
     Token name;
     std::shared_ptr<Expression> initializer;
 };
@@ -88,6 +97,7 @@ public:
     explicit BlockStmt(std::vector<std::shared_ptr<Statement>> statements)
         : statements(std::move(statements)) {}
     
+    void accept(StmtVisitor& visitor) const override;
     std::vector<std::shared_ptr<Statement>> statements;
 };
 
@@ -99,6 +109,7 @@ public:
            std::shared_ptr<Statement> elseBranch)
         : condition(std::move(condition)), thenBranch(std::move(thenBranch)), elseBranch(std::move(elseBranch)) {}
     
+    void accept(StmtVisitor& visitor) const override;
     std::shared_ptr<Expression> condition;
     std::shared_ptr<Statement> thenBranch;
     std::shared_ptr<Statement> elseBranch;
@@ -110,6 +121,7 @@ public:
     explicit Program(std::vector<std::shared_ptr<Statement>> statements)
         : statements(std::move(statements)) {}
     
+    void accept(ASTVisitor& visitor) const;
     std::vector<std::shared_ptr<Statement>> statements;
 };
 
