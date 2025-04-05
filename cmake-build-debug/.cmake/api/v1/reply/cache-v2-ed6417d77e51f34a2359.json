@@ -1686,6 +1686,70 @@
 			"value" : "[C:/Python313/python.exe][cfound components: Interpreter ][v3.13.2()]"
 		},
 		{
+			"name" : "GMOCK_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "GMOCK_LIBRARY-NOTFOUND"
+		},
+		{
+			"name" : "GMOCK_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "GMOCK_LIBRARY_DEBUG-NOTFOUND"
+		},
+		{
+			"name" : "GMOCK_MAIN_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "GMOCK_MAIN_LIBRARY-NOTFOUND"
+		},
+		{
+			"name" : "GMOCK_MAIN_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "GMOCK_MAIN_LIBRARY_DEBUG-NOTFOUND"
+		},
+		{
 			"name" : "GTEST_HAS_ABSL",
 			"properties" : 
 			[
@@ -1696,6 +1760,98 @@
 			],
 			"type" : "BOOL",
 			"value" : "OFF"
+		},
+		{
+			"name" : "GTEST_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "GTEST_INCLUDE_DIR-NOTFOUND"
+		},
+		{
+			"name" : "GTEST_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "GTEST_LIBRARY-NOTFOUND"
+		},
+		{
+			"name" : "GTEST_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "GTEST_LIBRARY_DEBUG-NOTFOUND"
+		},
+		{
+			"name" : "GTEST_MAIN_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "GTEST_MAIN_LIBRARY-NOTFOUND"
+		},
+		{
+			"name" : "GTEST_MAIN_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "GTEST_MAIN_LIBRARY_DEBUG-NOTFOUND"
+		},
+		{
+			"name" : "GTest_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for GTest."
+				}
+			],
+			"type" : "PATH",
+			"value" : "GTest_DIR-NOTFOUND"
 		},
 		{
 			"name" : "INSTALL_GTEST",

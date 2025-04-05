@@ -4,6 +4,7 @@
 #include <string>
 #include <utility>
 #include <variant>
+#include <cstdint>
 
 enum TokenType {
     IDENTIFIER,
@@ -14,7 +15,14 @@ enum TokenType {
     OPERATOR,
     COMMENT,
     ERROR,
-    END_OF_FILE
+    END_OF_FILE,
+
+    //Boolean
+    TRUE,
+    FALSE,
+
+    //Null Variables
+    NULL_KEYWORD
 };
 
 class Token {
@@ -22,7 +30,8 @@ public:
     TokenType type;
     std::string lexeme;
     int line;
-    std::variant<std::monostate, double, bool, std::string> value;
+    std::variant<std::monostate, double, bool, std::string>value;
+    uint32_t column;
 
     // Constructor with 3 parameters (no value)
     Token(TokenType type, std::string lexeme, int line)

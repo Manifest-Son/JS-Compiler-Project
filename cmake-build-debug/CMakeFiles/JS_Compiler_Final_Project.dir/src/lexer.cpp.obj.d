@@ -117,6 +117,9 @@ CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.obj: \
  C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/variant \
  C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/enable_special_members.h \
  C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/parse_numbers.h \
+ C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/cstdint \
+ C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/stdint.h \
+ C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/x86_64-w64-mingw32/include/stdint.h \
  C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/include/error_reporter.h \
  C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/iostream \
  C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/ostream \

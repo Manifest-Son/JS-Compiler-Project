@@ -1,0 +1,5 @@
+if(EXISTS "C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/ast_test[1]_tests.cmake")
+  include("C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/ast_test[1]_tests.cmake")
+else()
+  add_test(ast_test_NOT_BUILT ast_test_NOT_BUILT)
+endif()

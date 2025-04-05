@@ -1,4 +1,6 @@
 C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/CMakeFiles/JS_Compiler_Final_Project.dir
+C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/CMakeFiles/ast_test.dir
+C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/CMakeFiles/source_position_test.dir
 C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/CMakeFiles/test.dir
 C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/CMakeFiles/edit_cache.dir
 C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/cmake-build-debug/CMakeFiles/rebuild_cache.dir

@@ -1,27 +1,28 @@
 #include "../include/parser.h"
-#include <iostream>
 
-Parser::Parser(const std::vector<Token>& tokens) : tokens(tokens), current(0), start(0), line(1) {}
+Parser::Parser(const std::vector<Token> &tokens) : tokens(tokens), current(0), start(0), line(1) {}
 
+// Removed incorrect declaration outside class
 std::shared_ptr<Program> Parser::parse() {
     std::vector<std::shared_ptr<Statement>> statements;
-    
+
     while (!isAtEnd()) {
         // Skip any comment tokens before parsing
         while (match(TokenType::COMMENT) && !isAtEnd()) {
             // Just skip the comment token
         }
-        
-        if (isAtEnd()) break;
-        
+
+        if (isAtEnd())
+            break;
+
         try {
             start = current; // Mark the start of each declaration
             statements.push_back(declaration());
-        } catch (ParserError& error) {
+        } catch (ParserError &error) {
             synchronize();
         }
     }
-    
+
     return std::make_shared<Program>(statements);
 }
 
@@ -68,19 +69,27 @@ bool Parser::match(const std::vector<TokenType>& types) {
 
 Token Parser::consume(TokenType type, const std::string& message) {
     if (check(type)) return advance();
-    throw error(peek(), message);
+    
+    // Fixed: Use explicit this-> to avoid ambiguous call
+    throw this->error(peek(), message);
 }
 
 ParserError Parser::error(Token token, const std::string& message) {
-    std::cerr << "Error at line " << token.line;
-    if (token.type == END_OF_FILE) {
-        std::cerr << " at end";
-    } else {
-        std::cerr << " at '" << token.lexeme << "'";
-    }
-    std::cerr << ": " << message << std::endl;
+    std::string suggestion = "";
     
-    return ParserError(message);
+    // Basic error suggestions
+    if (message.find("Expect") != std::string::npos) {
+        if (message.find("';'") != std::string::npos) {
+            suggestion = "Add a semicolon at the end of the statement";
+        } else if (message.find("')'") != std::string::npos) {
+            suggestion = "Add a closing parenthesis";
+        } else if (message.find("'}'") != std::string::npos) {
+            suggestion = "Add a closing brace";
+        }
+    }
+    
+    // Create error with token's line info and column info
+    return ParserError(message, token.line, 0, suggestion);
 }
 
 void Parser::synchronize() {
@@ -139,7 +148,7 @@ std::shared_ptr<Statement> Parser::statement() {
     }
     
     if (match(TokenType::SYMBOL) && previous().lexeme == "{") {
-        return block();
+        return Parser::block();
     }
     
     return expressionStatement();
@@ -236,13 +245,12 @@ std::shared_ptr<Expression> Parser::factor() {
 }
 
 std::shared_ptr<Expression> Parser::unary() {
-    if (match(TokenType::OPERATOR) && 
-       (previous().lexeme == "!" || previous().lexeme == "-")) {
+    if (match(TokenType::OPERATOR) && (previous().lexeme == "!" || previous().lexeme == "-")) {
         Token op = previous();
         std::shared_ptr<Expression> right = unary();
         return std::make_shared<UnaryExpr>(op, right);
     }
-    
+
     return primary();
 }
 
@@ -268,6 +276,7 @@ std::shared_ptr<Expression> Parser::primary() {
         return expr;
     }
     
-    throw error(peek(), "Expect expression.");
+    // Fixed: Use explicit this-> to avoid ambiguous call
+    throw this->error(peek(), "Expect expression.");
 }
 

@@ -184,6 +184,32 @@ JS_Compiler_Final_Project/fast:
 .PHONY : JS_Compiler_Final_Project/fast
 
 #=============================================================================
+# Target rules for targets named ast_test
+
+# Build rule for target.
+ast_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ast_test
+.PHONY : ast_test
+
+# fast build rule for target.
+ast_test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ast_test.dir\build.make CMakeFiles/ast_test.dir/build
+.PHONY : ast_test/fast
+
+#=============================================================================
+# Target rules for targets named source_position_test
+
+# Build rule for target.
+source_position_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 source_position_test
+.PHONY : source_position_test
+
+# fast build rule for target.
+source_position_test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/build
+.PHONY : source_position_test/fast
+
+#=============================================================================
 # Target rules for targets named gmock
 
 # Build rule for target.
@@ -247,6 +273,60 @@ lexer_test: cmake_check_build_system
 lexer_test/fast:
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\lexer_test.dir\build.make tests/CMakeFiles/lexer_test.dir/build
 .PHONY : lexer_test/fast
+
+src/ast.obj: src/ast.cpp.obj
+.PHONY : src/ast.obj
+
+# target to build an object file
+src/ast.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/ast.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ast_test.dir\build.make CMakeFiles/ast_test.dir/src/ast.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/src/ast.cpp.obj
+.PHONY : src/ast.cpp.obj
+
+src/ast.i: src/ast.cpp.i
+.PHONY : src/ast.i
+
+# target to preprocess a source file
+src/ast.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/ast.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ast_test.dir\build.make CMakeFiles/ast_test.dir/src/ast.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/src/ast.cpp.i
+.PHONY : src/ast.cpp.i
+
+src/ast.s: src/ast.cpp.s
+.PHONY : src/ast.s
+
+# target to generate assembly for a file
+src/ast.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/ast.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ast_test.dir\build.make CMakeFiles/ast_test.dir/src/ast.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/src/ast.cpp.s
+.PHONY : src/ast.cpp.s
+
+src/error_reporter.obj: src/error_reporter.cpp.obj
+.PHONY : src/error_reporter.obj
+
+# target to build an object file
+src/error_reporter.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/error_reporter.cpp.obj
+.PHONY : src/error_reporter.cpp.obj
+
+src/error_reporter.i: src/error_reporter.cpp.i
+.PHONY : src/error_reporter.i
+
+# target to preprocess a source file
+src/error_reporter.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/error_reporter.cpp.i
+.PHONY : src/error_reporter.cpp.i
+
+src/error_reporter.s: src/error_reporter.cpp.s
+.PHONY : src/error_reporter.s
+
+# target to generate assembly for a file
+src/error_reporter.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/error_reporter.cpp.s
+.PHONY : src/error_reporter.cpp.s
 
 src/lexer.obj: src/lexer.cpp.obj
 .PHONY : src/lexer.obj
@@ -320,6 +400,81 @@ src/parser.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.s
 .PHONY : src/parser.cpp.s
 
+src/source_position.obj: src/source_position.cpp.obj
+.PHONY : src/source_position.obj
+
+# target to build an object file
+src/source_position.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/source_position.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/src/source_position.cpp.obj
+.PHONY : src/source_position.cpp.obj
+
+src/source_position.i: src/source_position.cpp.i
+.PHONY : src/source_position.i
+
+# target to preprocess a source file
+src/source_position.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/source_position.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/src/source_position.cpp.i
+.PHONY : src/source_position.cpp.i
+
+src/source_position.s: src/source_position.cpp.s
+.PHONY : src/source_position.s
+
+# target to generate assembly for a file
+src/source_position.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/source_position.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/src/source_position.cpp.s
+.PHONY : src/source_position.cpp.s
+
+tests/ast/ast_test.obj: tests/ast/ast_test.cc.obj
+.PHONY : tests/ast/ast_test.obj
+
+# target to build an object file
+tests/ast/ast_test.cc.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ast_test.dir\build.make CMakeFiles/ast_test.dir/tests/ast/ast_test.cc.obj
+.PHONY : tests/ast/ast_test.cc.obj
+
+tests/ast/ast_test.i: tests/ast/ast_test.cc.i
+.PHONY : tests/ast/ast_test.i
+
+# target to preprocess a source file
+tests/ast/ast_test.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ast_test.dir\build.make CMakeFiles/ast_test.dir/tests/ast/ast_test.cc.i
+.PHONY : tests/ast/ast_test.cc.i
+
+tests/ast/ast_test.s: tests/ast/ast_test.cc.s
+.PHONY : tests/ast/ast_test.s
+
+# target to generate assembly for a file
+tests/ast/ast_test.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ast_test.dir\build.make CMakeFiles/ast_test.dir/tests/ast/ast_test.cc.s
+.PHONY : tests/ast/ast_test.cc.s
+
+tests/source_position/source_position_test.obj: tests/source_position/source_position_test.cc.obj
+.PHONY : tests/source_position/source_position_test.obj
+
+# target to build an object file
+tests/source_position/source_position_test.cc.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/tests/source_position/source_position_test.cc.obj
+.PHONY : tests/source_position/source_position_test.cc.obj
+
+tests/source_position/source_position_test.i: tests/source_position/source_position_test.cc.i
+.PHONY : tests/source_position/source_position_test.i
+
+# target to preprocess a source file
+tests/source_position/source_position_test.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/tests/source_position/source_position_test.cc.i
+.PHONY : tests/source_position/source_position_test.cc.i
+
+tests/source_position/source_position_test.s: tests/source_position/source_position_test.cc.s
+.PHONY : tests/source_position/source_position_test.s
+
+# target to generate assembly for a file
+tests/source_position/source_position_test.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/tests/source_position/source_position_test.cc.s
+.PHONY : tests/source_position/source_position_test.cc.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -334,11 +489,19 @@ help:
 	@echo ... rebuild_cache
 	@echo ... test
 	@echo ... JS_Compiler_Final_Project
+	@echo ... ast_test
 	@echo ... gmock
 	@echo ... gmock_main
 	@echo ... gtest
 	@echo ... gtest_main
 	@echo ... lexer_test
+	@echo ... source_position_test
+	@echo ... src/ast.obj
+	@echo ... src/ast.i
+	@echo ... src/ast.s
+	@echo ... src/error_reporter.obj
+	@echo ... src/error_reporter.i
+	@echo ... src/error_reporter.s
 	@echo ... src/lexer.obj
 	@echo ... src/lexer.i
 	@echo ... src/lexer.s
@@ -348,6 +511,15 @@ help:
 	@echo ... src/parser.obj
 	@echo ... src/parser.i
 	@echo ... src/parser.s
+	@echo ... src/source_position.obj
+	@echo ... src/source_position.i
+	@echo ... src/source_position.s
+	@echo ... tests/ast/ast_test.obj
+	@echo ... tests/ast/ast_test.i
+	@echo ... tests/ast/ast_test.s
+	@echo ... tests/source_position/source_position_test.obj
+	@echo ... tests/source_position/source_position_test.i
+	@echo ... tests/source_position/source_position_test.s
 .PHONY : help
 
 

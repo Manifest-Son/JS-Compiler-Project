@@ -132,7 +132,7 @@ int main(int argc, char* argv[]) {
     print(result);
 
     // This code has an error - unterminated string
-    let message = "Hello, world;
+    let message = Hello, world;
   )";
 
   displayResults(source_code, verbose);

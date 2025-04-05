@@ -1,1 +1,1 @@
-CMakeFiles/JS_Compiler_Final_Project.dir/src/main.cpp.obj CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.obj CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.obj
+CMakeFiles/JS_Compiler_Final_Project.dir/src/main.cpp.obj CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.obj CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.obj CMakeFiles/JS_Compiler_Final_Project.dir/src/ast.cpp.obj CMakeFiles/JS_Compiler_Final_Project.dir/src/error_reporter.cpp.obj CMakeFiles/JS_Compiler_Final_Project.dir/src/source_position.cpp.obj

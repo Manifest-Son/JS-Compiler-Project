@@ -10,6 +10,13 @@ FetchContent_MakeAvailable(googletest)
 # Enable testing
 enable_testing()
 
+# Add gtest
+#add_subdirectory(../g_tests/googletest)
+
+# Add test directory
+#add_subdirectory(test)
+
+
 # Add test executable
 add_executable(lexer_test lexer/lexer_test.cc
         ../src/ast.cpp)

@@ -14,7 +14,7 @@ public:
     int line;
     int column;
     std::string suggestion;
-    
+
     ParserError(const std::string& message, int line = 0, int column = 0, 
                 const std::string& suggestion = "")
         : std::runtime_error(message), line(line), column(column), suggestion(suggestion) {}
@@ -39,15 +39,16 @@ private:
     bool isAtEnd() const;
     Token advance();
     bool check(TokenType type);
-    bool check(TokenType type) const;
     bool match(TokenType type);
     bool match(const std::vector<TokenType> &types);
+
     Token consume(TokenType type, const std::string& message);
     
     // Error handling
-    ParserError error(Token token, const std::string &message);
-    ParserError error(const Token& token, const std::string& message);
+    static ParserError error(Token token, const std::string &message);
     void synchronize();
+    std::shared_ptr<Statement> declaration();
+    std::shared_ptr<Statement> varDeclaration();
     std::string getErrorSuggestion(const std::string& message, const Token& token);
 
     // Grammar rules
@@ -58,7 +59,8 @@ private:
     std::shared_ptr<Statement> variableDeclaration();
     std::shared_ptr<Statement> blockStatement();
     std::shared_ptr<Statement> ifStatement();
-    
+    std::shared_ptr<Statement> block();
+
     std::shared_ptr<Expression> expression();
     std::shared_ptr<Expression> assignment();
     std::shared_ptr<Expression> logicalOr();
