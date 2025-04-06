@@ -36,7 +36,8 @@ public:
     
     // Get line of source code for context
     std::string getSourceLine(int line) const;
-    
+    void getErrorMessages();
+
 private:
     std::vector<ErrorMessage> errors;
     std::vector<std::string> sourceLines;

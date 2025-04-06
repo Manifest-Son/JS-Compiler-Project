@@ -42,6 +42,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/Platform/Windows.cmake"
   "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/Platform/WindowsPaths.cmake"
   "C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/cmake/win/x64/share/cmake-3.30/Modules/WriteBasicConfigVersionFile.cmake"
+  "C:/Users/YVONNE/.vcpkg-clion/vcpkg/scripts/buildsystems/vcpkg.cmake"
   "C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/CMakeLists.txt"
   "CMakeFiles/3.30.5/CMakeCCompiler.cmake"
   "CMakeFiles/3.30.5/CMakeCXXCompiler.cmake"
@@ -84,6 +85,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/JS_Compiler_Final_Project.dir/DependInfo.cmake"
+  "CMakeFiles/JS_Compiler_Benchmark.dir/DependInfo.cmake"
   "CMakeFiles/ast_test.dir/DependInfo.cmake"
   "CMakeFiles/source_position_test.dir/DependInfo.cmake"
   "_deps/googletest-build/googlemock/CMakeFiles/gmock.dir/DependInfo.cmake"

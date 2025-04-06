@@ -184,6 +184,19 @@ JS_Compiler_Final_Project/fast:
 .PHONY : JS_Compiler_Final_Project/fast
 
 #=============================================================================
+# Target rules for targets named JS_Compiler_Benchmark
+
+# Build rule for target.
+JS_Compiler_Benchmark: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 JS_Compiler_Benchmark
+.PHONY : JS_Compiler_Benchmark
+
+# fast build rule for target.
+JS_Compiler_Benchmark/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/build
+.PHONY : JS_Compiler_Benchmark/fast
+
+#=============================================================================
 # Target rules for targets named ast_test
 
 # Build rule for target.
@@ -280,6 +293,7 @@ src/ast.obj: src/ast.cpp.obj
 # target to build an object file
 src/ast.cpp.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/ast.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/ast.cpp.obj
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\ast_test.dir\build.make CMakeFiles/ast_test.dir/src/ast.cpp.obj
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/src/ast.cpp.obj
 .PHONY : src/ast.cpp.obj
@@ -290,6 +304,7 @@ src/ast.i: src/ast.cpp.i
 # target to preprocess a source file
 src/ast.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/ast.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/ast.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\ast_test.dir\build.make CMakeFiles/ast_test.dir/src/ast.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/src/ast.cpp.i
 .PHONY : src/ast.cpp.i
@@ -300,9 +315,34 @@ src/ast.s: src/ast.cpp.s
 # target to generate assembly for a file
 src/ast.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/ast.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/ast.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\ast_test.dir\build.make CMakeFiles/ast_test.dir/src/ast.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/src/ast.cpp.s
 .PHONY : src/ast.cpp.s
+
+src/benchmark_main.obj: src/benchmark_main.cpp.obj
+.PHONY : src/benchmark_main.obj
+
+# target to build an object file
+src/benchmark_main.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/benchmark_main.cpp.obj
+.PHONY : src/benchmark_main.cpp.obj
+
+src/benchmark_main.i: src/benchmark_main.cpp.i
+.PHONY : src/benchmark_main.i
+
+# target to preprocess a source file
+src/benchmark_main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/benchmark_main.cpp.i
+.PHONY : src/benchmark_main.cpp.i
+
+src/benchmark_main.s: src/benchmark_main.cpp.s
+.PHONY : src/benchmark_main.s
+
+# target to generate assembly for a file
+src/benchmark_main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/benchmark_main.cpp.s
+.PHONY : src/benchmark_main.cpp.s
 
 src/error_reporter.obj: src/error_reporter.cpp.obj
 .PHONY : src/error_reporter.obj
@@ -310,6 +350,7 @@ src/error_reporter.obj: src/error_reporter.cpp.obj
 # target to build an object file
 src/error_reporter.cpp.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/error_reporter.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/error_reporter.cpp.obj
 .PHONY : src/error_reporter.cpp.obj
 
 src/error_reporter.i: src/error_reporter.cpp.i
@@ -318,6 +359,7 @@ src/error_reporter.i: src/error_reporter.cpp.i
 # target to preprocess a source file
 src/error_reporter.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/error_reporter.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/error_reporter.cpp.i
 .PHONY : src/error_reporter.cpp.i
 
 src/error_reporter.s: src/error_reporter.cpp.s
@@ -326,6 +368,7 @@ src/error_reporter.s: src/error_reporter.cpp.s
 # target to generate assembly for a file
 src/error_reporter.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/error_reporter.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/error_reporter.cpp.s
 .PHONY : src/error_reporter.cpp.s
 
 src/lexer.obj: src/lexer.cpp.obj
@@ -334,6 +377,7 @@ src/lexer.obj: src/lexer.cpp.obj
 # target to build an object file
 src/lexer.cpp.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/lexer.cpp.obj
 .PHONY : src/lexer.cpp.obj
 
 src/lexer.i: src/lexer.cpp.i
@@ -342,6 +386,7 @@ src/lexer.i: src/lexer.cpp.i
 # target to preprocess a source file
 src/lexer.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/lexer.cpp.i
 .PHONY : src/lexer.cpp.i
 
 src/lexer.s: src/lexer.cpp.s
@@ -350,6 +395,7 @@ src/lexer.s: src/lexer.cpp.s
 # target to generate assembly for a file
 src/lexer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/lexer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/lexer.cpp.s
 .PHONY : src/lexer.cpp.s
 
 src/main.obj: src/main.cpp.obj
@@ -382,6 +428,7 @@ src/parser.obj: src/parser.cpp.obj
 # target to build an object file
 src/parser.cpp.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/parser.cpp.obj
 .PHONY : src/parser.cpp.obj
 
 src/parser.i: src/parser.cpp.i
@@ -390,6 +437,7 @@ src/parser.i: src/parser.cpp.i
 # target to preprocess a source file
 src/parser.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/parser.cpp.i
 .PHONY : src/parser.cpp.i
 
 src/parser.s: src/parser.cpp.s
@@ -398,6 +446,7 @@ src/parser.s: src/parser.cpp.s
 # target to generate assembly for a file
 src/parser.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/parser.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/parser.cpp.s
 .PHONY : src/parser.cpp.s
 
 src/source_position.obj: src/source_position.cpp.obj
@@ -406,6 +455,7 @@ src/source_position.obj: src/source_position.cpp.obj
 # target to build an object file
 src/source_position.cpp.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/source_position.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/source_position.cpp.obj
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/src/source_position.cpp.obj
 .PHONY : src/source_position.cpp.obj
 
@@ -415,6 +465,7 @@ src/source_position.i: src/source_position.cpp.i
 # target to preprocess a source file
 src/source_position.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/source_position.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/source_position.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/src/source_position.cpp.i
 .PHONY : src/source_position.cpp.i
 
@@ -424,6 +475,7 @@ src/source_position.s: src/source_position.cpp.s
 # target to generate assembly for a file
 src/source_position.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Final_Project.dir\build.make CMakeFiles/JS_Compiler_Final_Project.dir/src/source_position.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\JS_Compiler_Benchmark.dir\build.make CMakeFiles/JS_Compiler_Benchmark.dir/src/source_position.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/src/source_position.cpp.s
 .PHONY : src/source_position.cpp.s
 
@@ -488,6 +540,7 @@ help:
 	@echo ... list_install_components
 	@echo ... rebuild_cache
 	@echo ... test
+	@echo ... JS_Compiler_Benchmark
 	@echo ... JS_Compiler_Final_Project
 	@echo ... ast_test
 	@echo ... gmock
@@ -499,6 +552,9 @@ help:
 	@echo ... src/ast.obj
 	@echo ... src/ast.i
 	@echo ... src/ast.s
+	@echo ... src/benchmark_main.obj
+	@echo ... src/benchmark_main.i
+	@echo ... src/benchmark_main.s
 	@echo ... src/error_reporter.obj
 	@echo ... src/error_reporter.i
 	@echo ... src/error_reporter.s

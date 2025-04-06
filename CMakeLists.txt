@@ -21,6 +21,25 @@ add_executable(JS_Compiler_Final_Project
         src/source_position.cpp
 )
 
+# Benchmark executable
+add_executable(JS_Compiler_Benchmark
+        src/benchmark_main.cpp
+        include/benchmark.h
+        include/lexer.h
+        src/lexer.cpp
+        include/token.h
+        include/ast.h
+        include/parser.h
+        include/parser_error.h
+        src/parser.cpp
+        src/ast.cpp
+        src/error_reporter.cpp
+        include/error_reporter.h
+        include/ast_visitor.h
+        include/source_position.h
+        src/source_position.cpp
+)
+
 include(FetchContent)
 FetchContent_Declare(
         googletest
