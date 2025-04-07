@@ -1,0 +1,4 @@
+Input Size (B),Token Count,Tokenization Time (ms),Parsing Time (ms),Total Time (ms),Tokens Per Second,Memory Usage (KB),AST Node Count,AST Max Depth,Status,Error Message
+434,120,0.9488,0.0002,0.949,126475,16,0,0,failure,"Lexical error"
+527,114,0.8211,0.0001,0.8212,138838,0,0,0,failure,"Lexical error"
+1431,269,3.1059,0.0001,3.106,86609,56,0,0,failure,"Lexical error"

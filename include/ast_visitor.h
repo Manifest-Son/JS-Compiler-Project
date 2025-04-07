@@ -65,7 +65,7 @@ public:
 // Combined visitor for the entire AST
 class ASTVisitor : public ExprVisitor, public StmtVisitor {
 public:
-    virtual ~ASTVisitor() = default;
+    ~ASTVisitor() override = default;
 
     virtual void visitProgram(const Program &program) = 0;
 };

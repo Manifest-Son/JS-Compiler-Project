@@ -5,6 +5,7 @@
 #include <sstream>
 #include "ast.h"
 
+// AST printer implementation using the visitor pattern
 class ASTPrinter {
 public:
     std::string print(const std::shared_ptr<ASTNode> &node) {

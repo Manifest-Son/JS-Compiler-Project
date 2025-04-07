@@ -7,6 +7,7 @@
 #include <string>
 #include "token.h"
 #include "ast.h"
+#include "lexer.h"
 
 // Enhanced parser error with line, column, and suggestion
 class ParserError : public std::runtime_error {
@@ -22,11 +23,14 @@ public:
 
 class Parser {
 public:
+    Parser(Lexer&); //Used
     explicit Parser(const std::vector<Token>& tokens);
     std::shared_ptr<Program> parse();
     bool isAtEnd();
     Token peek();
     Token previous();
+    void parseProgram();
+    static void fromString(const std::string & string);
 
 private:
     std::vector<Token> tokens;

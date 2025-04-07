@@ -22,7 +22,20 @@ enum TokenType {
     FALSE,
 
     //Null Variables
-    NULL_KEYWORD
+    NULL_KEYWORD,
+    PLUS,
+    STAR,
+    EQUAL_EQUAL,
+    AND,
+    BANG_EQUAL,
+    OR,
+    LESS,
+    LESS_EQUAL,
+    GREATER,
+    GREATER_EQUAL,
+    MINUS,
+    BANG,
+    SLASH
 };
 
 class Token {

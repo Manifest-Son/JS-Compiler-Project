@@ -143,7 +143,7 @@ public:
         }
         currentDepth--;
     }
-    
+
     void visitIfStmt(const IfStmt &stmt) override {
         nodeCount++;
         currentDepth++;
@@ -153,7 +153,7 @@ public:
         visitIfNotNull(stmt.elseBranch);
         currentDepth--;
     }
-    
+
     void visitWhileStmt(const WhileStmt &stmt) override {
         nodeCount++;
         currentDepth++;
@@ -162,7 +162,7 @@ public:
         visitIfNotNull(stmt.body);
         currentDepth--;
     }
-    
+
     void visitForStmt(const ForStmt &stmt) override {
         nodeCount++;
         currentDepth++;
@@ -173,14 +173,12 @@ public:
         visitIfNotNull(stmt.body);
         currentDepth--;
     }
-    
+
     void visitFunctionDeclStmt(const FunctionDeclStmt &stmt) override {
         nodeCount++;
         currentDepth++;
         updateMaxDepth();
-        // if (stmt.body.data()) {
-        //     stmt.body->accept(*this);
-        // }
+        // visitIfNotNull(stmt.accept(*this));
         currentDepth--;
     }
 
@@ -290,10 +288,9 @@ public:
             // Check for lexical errors
             if (lexer.getErrorReporter().hasErrors()) {
                 result.success = false;
-                result.errorMessage = "Lexical error: ";
-                // result.errorMessage.append(lexer.getErrorReporter().getErrorMessages());
-                // result.errorMessage = std::string("Lexical error: ").append(lexer.getErrorReporter().getErrorMessages());
-                // result.errorMessage = "Lexical error: " + (lexer.getErrorReporter().getErrorMessages());
+                // Fix the string concatenation issue
+                result.errorMessage = "Lexical error";
+                // result.errorMessage += std::string(lexer.getErrorReporter().getErrorMessages());
             }
         } catch (const std::exception &e) {
             result.success = false;
@@ -508,3 +505,4 @@ for (let i = 0; i < 5; i++) {
 };
 
 #endif // BENCHMARK_H
+
