@@ -14,6 +14,7 @@ set CXXFLAGS=-std=c++17 -I%INCLUDE_DIR%
   %SRC_DIR%\parser.cpp ^
   %SRC_DIR%\ast.cpp ^
   %SRC_DIR%\ast_printer.cpp ^
+  %SRC_DIR%\error_reporter.cpp ^
   %SRC_DIR%\cfg\control_flow_graph.cpp ^
   %SRC_DIR%\cfg\cfg_builder.cpp ^
   %SRC_DIR%\cfg\ssa_transformer.cpp ^

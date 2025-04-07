@@ -189,4 +189,9 @@ CMakeFiles/JS_Compiler_Benchmark.dir/src/parser.cpp.obj: \
  C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/hashtable_policy.h \
  C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/node_handle.h \
  C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/erase_if.h \
- C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/include/source_position.h
+ C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/include/source_position.h \
+ C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/include/lexer.h \
+ C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project/include/error_reporter.h \
+ C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/iostream \
+ C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/istream \
+ C:/Program\ Files/JetBrains/CLion\ 2024.3.1.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/istream.tcc

@@ -206,8 +206,8 @@ CMakeFiles/JS_Compiler_Benchmark.dir/clean:
 # Target rules for target CMakeFiles/ast_test.dir
 
 # All Build rule for target.
-CMakeFiles/ast_test.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 CMakeFiles/ast_test.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
+CMakeFiles/ast_test.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\ast_test.dir\build.make CMakeFiles/ast_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\ast_test.dir\build.make CMakeFiles/ast_test.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\CMakeFiles --progress-num=15,16,17 "Built target ast_test"
@@ -233,8 +233,8 @@ CMakeFiles/ast_test.dir/clean:
 # Target rules for target CMakeFiles/source_position_test.dir
 
 # All Build rule for target.
-CMakeFiles/source_position_test.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 CMakeFiles/source_position_test.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
+CMakeFiles/source_position_test.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\source_position_test.dir\build.make CMakeFiles/source_position_test.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\CMakeFiles --progress-num=29,30,31,32 "Built target source_position_test"
@@ -365,8 +365,8 @@ _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/clean:
 # Target rules for target tests/CMakeFiles/lexer_test.dir
 
 # All Build rule for target.
-tests/CMakeFiles/lexer_test.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 tests/CMakeFiles/lexer_test.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
+tests/CMakeFiles/lexer_test.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\lexer_test.dir\build.make tests/CMakeFiles/lexer_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\lexer_test.dir\build.make tests/CMakeFiles/lexer_test.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\YVONNE\Desktop\JS_Compiler_Final_Project\cmake-build-debug\CMakeFiles --progress-num=26,27,28 "Built target lexer_test"

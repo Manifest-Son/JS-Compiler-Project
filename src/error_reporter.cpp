@@ -5,7 +5,7 @@ ErrorReporter::ErrorReporter(const std::string& source) {
     splitSourceIntoLines(source);
 }
 
-void ErrorReporter::report(ErrorSeverity severity, int line, int column, 
+void ErrorReporter::report(ErrorSeverity severity, int line, int column,
                            const std::string& message, const std::string& suggestion) {
     ErrorMessage error = {
         .severity = severity,
@@ -14,9 +14,9 @@ void ErrorReporter::report(ErrorSeverity severity, int line, int column,
         .message = message,
         .suggestion = suggestion
     };
-    
+
     errors.push_back(error);
-    
+
     if (severity == ErrorSeverity::ERROR || severity == ErrorSeverity::FATAL) {
         errors_present = true;
     } else if (severity == ErrorSeverity::WARNING) {
@@ -26,16 +26,16 @@ void ErrorReporter::report(ErrorSeverity severity, int line, int column,
 
 void ErrorReporter::displayErrors(std::ostream& out) {
     for (const auto& error : errors) {
-        out << severityToString(error.severity) << " at line " << error.line 
+        out << severityToString(error.severity) << " at line " << error.line
             << ", column " << error.column << ": " << error.message << std::endl;
-        
+
         // Show source code context if available
         std::string context = getSourceLine(error.line);
         if (!context.empty()) {
             out << context << std::endl;
             out << std::string(error.column - 1, ' ') << "^" << std::endl;
         }
-        
+
         // Show suggestion if available
         if (!error.suggestion.empty()) {
             out << "Suggestion: " << error.suggestion << std::endl;
@@ -91,7 +91,7 @@ std::string ErrorReporter::severityToString(ErrorSeverity severity) const {
 std::string ErrorReporter::highlightLocation(int line, int column) const {
     std::string sourceLine = getSourceLine(line);
     if (sourceLine.empty()) return "";
-    
+
     std::string result = sourceLine + "\n";
     result += std::string(column - 1, ' ') + "^";
     return result;
