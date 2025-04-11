@@ -9,9 +9,9 @@
 #include <vector>
 #include "source_position.h"
 #include "token.h"
+#include "parser.h"
 
 class Statement;
-// Forward declarations
 class ExprVisitor;
 class StmtVisitor;
 class ASTVisitor;
@@ -109,6 +109,33 @@ public:
         }
     }
 
+    // Additional constructor for boolean literals
+    explicit LiteralExpr(bool value) {
+        isConstantEvaluated = true;
+        constantValue = value;
+        inferredType = Type::Boolean;
+    }
+
+    // Additional constructor for null literal
+    LiteralExpr(std::nullptr_t) {
+        isConstantEvaluated = true;
+        inferredType = Type::Null;
+    }
+
+    // Additional constructor for numeric literals
+    explicit LiteralExpr(double value) {
+        isConstantEvaluated = true;
+        constantValue = value;
+        inferredType = Type::Number;
+    }
+
+    // Additional constructor for string literals
+    explicit LiteralExpr(const std::string &value) {
+        isConstantEvaluated = true;
+        constantValue = value;
+        inferredType = Type::String;
+    }
+
     void accept(ExprVisitor &visitor) const override;
     Token token;
 };
@@ -132,6 +159,9 @@ public:
     BinaryExpr(std::shared_ptr<Expression> left, Token op, std::shared_ptr<Expression> right) :
         left(std::move(left)), op(std::move(op)), right(std::move(right)) {}
 
+    BinaryExpr(std::unique_ptr<Expression> left, Token op, std::unique_ptr<Expression> right) :
+        left(std::move(left)), op(std::move(op)), right(std::move(right)) {}
+
     void accept(ExprVisitor &visitor) const override;
     std::shared_ptr<Expression> left;
     Token op;
@@ -143,9 +173,49 @@ class UnaryExpr final : public Expression {
 public:
     UnaryExpr(Token op, std::shared_ptr<Expression> right) : op(std::move(op)), right(std::move(right)) {}
 
+    UnaryExpr(Token op, std::unique_ptr<Expression> right) : op(std::move(op)), right(std::move(right)) {}
+
     void accept(ExprVisitor &visitor) const override;
     Token op;
     std::shared_ptr<Expression> right;
+};
+
+// Assignment expression (a = value)
+class AssignExpr final : public Expression {
+public:
+    AssignExpr(Token name, std::shared_ptr<Expression> value) : name(std::move(name)), value(std::move(value)) {}
+
+    AssignExpr(Token name, std::unique_ptr<Expression> value) : name(std::move(name)), value(std::move(value)) {}
+
+    void accept(ExprVisitor &visitor) const override;
+    Token name;
+    std::shared_ptr<Expression> value;
+};
+
+// Logical expression (&&, ||)
+class LogicalExpr final : public Expression {
+public:
+    LogicalExpr(std::shared_ptr<Expression> left, Token op, std::shared_ptr<Expression> right) :
+        left(std::move(left)), op(std::move(op)), right(std::move(right).get()) {}
+
+    LogicalExpr(std::shared_ptr<Expression> left, Token op, std::unique_ptr<Expression> right) :
+        left(std::move(left)), op(std::move(op)), right(std::move(right)) {}
+
+    void accept(ExprVisitor &visitor) const override;
+    std::shared_ptr<Expression> left;
+    Token op;
+    std::remove_reference<std::unique_ptr<Expression> &>::type right;
+};
+
+// Grouping expression (parenthesized expressions)
+class GroupingExpr final : public Expression {
+public:
+    explicit GroupingExpr(std::shared_ptr<Expression> expression) : expression(std::move(expression)) {}
+
+    explicit GroupingExpr(std::unique_ptr<Expression> expression) : expression(std::move(expression)) {}
+
+    void accept(ExprVisitor &visitor) const override;
+    std::shared_ptr<Expression> expression;
 };
 
 // Function call expression
@@ -153,6 +223,14 @@ class CallExpr final : public Expression {
 public:
     CallExpr(std::shared_ptr<Expression> callee, Token paren, std::vector<std::shared_ptr<Expression>> arguments) :
         callee(std::move(callee)), paren(std::move(paren)), arguments(std::move(arguments)) {}
+
+    CallExpr(std::unique_ptr<Expression> callee, Token paren, std::vector<std::unique_ptr<Expression>> arguments) :
+        paren(std::move(paren)) {
+        this->callee = std::move(callee);
+        for (auto &arg: arguments) {
+            this->arguments.push_back(std::move(arg));
+        }
+    }
 
     void accept(ExprVisitor &visitor) const override;
     std::shared_ptr<Expression> callee;
@@ -164,6 +242,8 @@ public:
 class GetExpr final : public Expression {
 public:
     GetExpr(std::shared_ptr<Expression> object, Token name) : object(std::move(object)), name(std::move(name)) {}
+
+    GetExpr(std::unique_ptr<Expression> object, Token name) : object(std::move(object)), name(std::move(name)) {}
 
     void accept(ExprVisitor &visitor) const override;
     std::shared_ptr<Expression> object;
@@ -177,6 +257,13 @@ public:
         inferredType = Type::Array;
     }
 
+    explicit ArrayExpr(std::vector<std::unique_ptr<Expression>> elements) {
+        inferredType = Type::Array;
+        for (auto &element: elements) {
+            this->elements.push_back(std::move(element));
+        }
+    }
+
     void accept(ExprVisitor &visitor) const override;
     std::vector<std::shared_ptr<Expression>> elements;
 };
@@ -187,6 +274,12 @@ public:
     struct Property {
         Token key;
         std::shared_ptr<Expression> value;
+
+        // Constructor that accepts unique_ptr
+        Property(Token key, std::unique_ptr<Expression> value) : key(std::move(key)) { this->value = std::move(value); }
+
+        // Constructor that accepts shared_ptr
+        Property(Token key, std::shared_ptr<Expression> value) : key(std::move(key)), value(std::move(value)) {}
     };
 
     explicit ObjectExpr(std::vector<Property> properties) : properties(std::move(properties)) {
@@ -203,8 +296,18 @@ public:
     ArrowFunctionExpr(std::vector<Token> parameters, std::shared_ptr<Expression> body) :
         parameters(std::move(parameters)), body(std::move(body)), bodyIsExpression(true) {}
 
+    ArrowFunctionExpr(std::vector<Token> parameters, std::unique_ptr<Expression> body) :
+        parameters(std::move(parameters)), bodyIsExpression(true) {
+        this->body = std::move(body);
+    }
+
     ArrowFunctionExpr(std::vector<Token> parameters, std::shared_ptr<Statement> blockBody) :
         parameters(std::move(parameters)), blockBody(std::move(blockBody)), bodyIsExpression(false) {}
+
+    ArrowFunctionExpr(std::vector<Token> parameters, std::unique_ptr<Statement> blockBody) :
+        parameters(std::move(parameters)), bodyIsExpression(false) {
+        this->blockBody = std::move(blockBody);
+    }
 
     void accept(ExprVisitor &visitor) const override;
     std::vector<Token> parameters;
@@ -228,6 +331,8 @@ class ExpressionStmt final : public Statement {
 public:
     explicit ExpressionStmt(std::shared_ptr<Expression> expression) : expression(std::move(expression)) {}
 
+    explicit ExpressionStmt(std::unique_ptr<Expression> expression) : expression(std::move(expression)) {}
+
     void accept(StmtVisitor &visitor) const override;
     std::shared_ptr<Expression> expression;
 };
@@ -236,6 +341,9 @@ public:
 class VarDeclStmt final : public Statement {
 public:
     VarDeclStmt(Token name, std::shared_ptr<Expression> initializer) :
+        name(std::move(name)), initializer(std::move(initializer)) {}
+
+    VarDeclStmt(Token name, std::unique_ptr<Expression> initializer) :
         name(std::move(name)), initializer(std::move(initializer)) {}
 
     void accept(StmtVisitor &visitor) const override;
@@ -252,6 +360,12 @@ class BlockStmt final : public Statement {
 public:
     explicit BlockStmt(std::vector<std::shared_ptr<Statement>> statements) : statements(std::move(statements)) {}
 
+    explicit BlockStmt(std::vector<std::unique_ptr<Statement>> statements) {
+        for (auto &stmt: statements) {
+            this->statements.push_back(std::move(stmt));
+        }
+    }
+
     void accept(StmtVisitor &visitor) const override;
     std::vector<std::shared_ptr<Statement>> statements;
 };
@@ -261,6 +375,9 @@ class IfStmt final : public Statement {
 public:
     IfStmt(std::shared_ptr<Expression> condition, std::shared_ptr<Statement> thenBranch,
            std::shared_ptr<Statement> elseBranch) :
+        condition(std::move(condition)), thenBranch(std::move(thenBranch)), elseBranch(std::move(elseBranch)) {}
+
+    IfStmt(std::unique_ptr<Expression> condition, std::unique_ptr<Statement> thenBranch, std::unique_ptr<Statement> elseBranch) :
         condition(std::move(condition)), thenBranch(std::move(thenBranch)), elseBranch(std::move(elseBranch)) {}
 
     void accept(StmtVisitor &visitor) const override;
@@ -275,6 +392,9 @@ public:
     WhileStmt(std::shared_ptr<Expression> condition, std::shared_ptr<Statement> body) :
         condition(std::move(condition)), body(std::move(body)) {}
 
+    WhileStmt(std::unique_ptr<Expression> condition, std::unique_ptr<Statement> body) :
+        condition(std::move(condition)), body(std::move(body)) {}
+
     void accept(StmtVisitor &visitor) const override;
     std::shared_ptr<Expression> condition;
     std::shared_ptr<Statement> body;
@@ -285,6 +405,11 @@ class ForStmt final : public Statement {
 public:
     ForStmt(std::shared_ptr<Statement> initializer, std::shared_ptr<Expression> condition,
             std::shared_ptr<Expression> increment, std::shared_ptr<Statement> body) :
+        initializer(std::move(initializer)), condition(std::move(condition)), increment(std::move(increment)),
+        body(std::move(body)) {}
+
+    ForStmt(std::unique_ptr<Statement> initializer, std::unique_ptr<Expression> condition, std::unique_ptr<Expression> increment,
+            std::unique_ptr<Statement> body) :
         initializer(std::move(initializer)), condition(std::move(condition)), increment(std::move(increment)),
         body(std::move(body)) {}
 
@@ -301,6 +426,13 @@ public:
     FunctionDeclStmt(Token name, std::vector<Token> params, std::vector<std::shared_ptr<Statement>> body) :
         name(std::move(name)), params(std::move(params)), body(std::move(body)) {}
 
+    FunctionDeclStmt(Token name, std::vector<Token> params, std::vector<std::unique_ptr<Statement>> body) :
+        name(std::move(name)), params(std::move(params)) {
+        for (auto &stmt: body) {
+            this->body.push_back(std::move(stmt));
+        }
+    }
+
     void accept(StmtVisitor &visitor) const override;
     Token name;
     std::vector<Token> params;
@@ -316,6 +448,8 @@ class ReturnStmt final : public Statement {
 public:
     ReturnStmt(Token keyword, std::shared_ptr<Expression> value) :
         keyword(std::move(keyword)), value(std::move(value)) {}
+
+    ReturnStmt(Token keyword, std::unique_ptr<Expression> value) : keyword(std::move(keyword)), value(std::move(value)) {}
 
     void accept(StmtVisitor &visitor) const override;
     Token keyword; // For location information in error reporting
@@ -363,6 +497,12 @@ public:
 class Program final : public ASTNode {
 public:
     explicit Program(std::vector<std::shared_ptr<Statement>> statements) : statements(std::move(statements)) {}
+
+    explicit Program(std::vector<std::unique_ptr<Statement>> statements) {
+        for (auto &stmt: statements) {
+            this->statements.push_back(std::move(stmt));
+        }
+    }
 
     void accept(ASTVisitor &visitor) const;
     std::vector<std::shared_ptr<Statement>> statements;

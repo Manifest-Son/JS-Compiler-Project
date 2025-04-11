@@ -27,6 +27,108 @@
 #include <unordered_map>
 #include <vector>
 
+#include <chrono>
+#include <iostream>
+#include <llvm/ExecutionEngine/ExecutionEngine.h>
+#include <llvm/ExecutionEngine/Orc/LLJIT.h>
+#include <llvm/IR/LegacyPassManager.h>
+#include <llvm/IR/Verifier.h>
+#include <llvm/Support/TargetSelect.h>
+#include <llvm/Support/raw_ostream.h>
+#include <llvm/Target/TargetMachine.h>
+#include <llvm/Transforms/IPO.h>
+#include <llvm/Transforms/IPO/PassManagerBuilder.h>
+#include <llvm/Transforms/InstCombine/InstCombine.h>
+#include <llvm/Transforms/Scalar.h>
+#include <llvm/Transforms/Scalar/GVN.h>
+
+// Performance tracking variables for benchmarking
+namespace {
+    // Timing statistics
+    std::chrono::milliseconds totalCompileTime(0);
+    std::chrono::milliseconds totalOptimizationTime(0);
+    std::chrono::milliseconds totalCodegenTime(0);
+    std::chrono::milliseconds totalJITTime(0);
+
+    // Memory statistics
+    size_t peakMemoryUsage = 0;
+    size_t cumulativeMemoryDelta = 0;
+
+    // Counter for number of compilations
+    size_t compilationCount = 0;
+
+    // Helper function to get current memory usage
+    size_t getCurrentMemoryUsage() {
+#ifdef _WIN32
+        // Windows implementation
+        PROCESS_MEMORY_COUNTERS_EX pmc;
+        if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS *) &pmc, sizeof(pmc))) {
+            return static_cast<size_t>(pmc.WorkingSetSize);
+        }
+        return 0;
+#elif defined(__APPLE__) && defined(__MACH__)
+        // MacOS implementation
+        struct mach_task_basic_info info;
+        mach_msg_type_number_t infoCount = MACH_TASK_BASIC_INFO_COUNT;
+        if (task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t) &info, &infoCount) == KERN_SUCCESS) {
+            return static_cast<size_t>(info.resident_size);
+        }
+        return 0;
+#elif defined(__linux__) || defined(__linux) || defined(linux)
+        // Linux implementation
+        long rss = 0L;
+        FILE *fp = nullptr;
+        if ((fp = fopen("/proc/self/statm", "r")) == nullptr) {
+            return 0;
+        }
+        if (fscanf(fp, "%*s%ld", &rss) != 1) {
+            fclose(fp);
+            return 0;
+        }
+        fclose(fp);
+        return static_cast<size_t>(rss * sysconf(_SC_PAGESIZE));
+#else
+        // Unsupported platform
+        return 0;
+#endif
+    }
+
+    // Update peak memory usage
+    void updatePeakMemory() {
+        size_t currentMemory = getCurrentMemoryUsage();
+        peakMemoryUsage = std::max(peakMemoryUsage, currentMemory);
+    }
+} // namespace
+
+// Reset performance tracking for a new run
+void resetPerformanceTracking() {
+    totalCompileTime = std::chrono::milliseconds(0);
+    totalOptimizationTime = std::chrono::milliseconds(0);
+    totalCodegenTime = std::chrono::milliseconds(0);
+    totalJITTime = std::chrono::milliseconds(0);
+    peakMemoryUsage = getCurrentMemoryUsage();
+    cumulativeMemoryDelta = 0;
+    compilationCount = 0;
+}
+
+// Get performance statistics as a formatted string
+std::string getPerformanceStatistics() {
+    std::stringstream ss;
+    ss << "Performance Statistics:\n"
+       << "  Compilation Count: " << compilationCount << "\n"
+       << "  Average Compile Time: " << (compilationCount > 0 ? totalCompileTime.count() / compilationCount : 0)
+       << " ms\n"
+       << "  Average Optimization Time: "
+       << (compilationCount > 0 ? totalOptimizationTime.count() / compilationCount : 0) << " ms\n"
+       << "  Average Codegen Time: " << (compilationCount > 0 ? totalCodegenTime.count() / compilationCount : 0)
+       << " ms\n"
+       << "  Average JIT Time: " << (compilationCount > 0 ? totalJITTime.count() / compilationCount : 0) << " ms\n"
+       << "  Peak Memory Usage: " << (peakMemoryUsage / 1024) << " KB\n"
+       << "  Average Memory Delta: " << (compilationCount > 0 ? cumulativeMemoryDelta / compilationCount / 1024 : 0)
+       << " KB\n";
+    return ss.str();
+}
+
 // Function declarations for runtime functions
 static std::unordered_map<std::string, llvm::Function *> runtimeFunctions;
 
@@ -38,28 +140,25 @@ static std::unordered_map<std::string, llvm::Function *> runtimeFunctions;
     runtimeFunctions[#name] = name##Func;
 
 // LLVMBackend implementation
-LLVMBackend::LLVMBackend(const std::string &moduleName) : currentFunction(nullptr), returnValue(nullptr) {
-    // Initialize LLVM
-    static bool isLLVMInitialized = false;
-    if (!isLLVMInitialized) {
-        llvm::InitializeNativeTarget();
-        llvm::InitializeNativeTargetAsmPrinter();
-        llvm::InitializeNativeTargetAsmParser();
-        isLLVMInitialized = true;
-    }
+LLVMBackend::LLVMBackend(const std::string &moduleName) :
+    context(std::make_unique<llvm::LLVMContext>()), module(std::make_unique<llvm::Module>(moduleName, *context)),
+    builder(std::make_unique<llvm::IRBuilder<>>(*context)), typeMapping(*context) {
 
-    // Create LLVM context and module
-    context = std::make_unique<llvm::LLVMContext>();
+    // Initialize the runtime
+    runtime = std::make_unique<JSRuntime>(*context, module.get());
+    runtime->declareAll();
 
-    // Initialize the type mapping with the created context
-    typeMapping = JSTypeMapping(*context);
+    // Get references to runtime functions
+    auto &funcs = runtime->getAllFunctions();
+    runtimeFunctions.insert(funcs.begin(), funcs.end());
 
-    // Initialize the module
-    initializeModule(moduleName);
+    // Update memory tracking
+    updatePeakMemory();
 }
 
 LLVMBackend::~LLVMBackend() {
-    // Cleanup is handled by smart pointers
+    // LLVM classes have proper destructors, nothing special needed here
+    updatePeakMemory();
 }
 
 void LLVMBackend::initializeModule(const std::string &moduleName) {
@@ -165,84 +264,132 @@ void LLVMBackend::createMainFunction() {
 }
 
 bool LLVMBackend::compile(const Program &program) {
-    // Create basic block inside the main function
-    llvm::Function *mainFunc = module->getFunction("main");
-    if (!mainFunc) {
-        std::cerr << "Failed to find main function." << std::endl;
+    // Measure memory before compilation
+    size_t memBefore = getCurrentMemoryUsage();
+
+    // Start timing
+    auto startTime = std::chrono::high_resolution_clock::now();
+    auto codegenStartTime = startTime;
+
+    try {
+        compilationCount++;
+
+        // Declare the main function
+        llvm::FunctionType *mainType = llvm::FunctionType::get(typeMapping.getJSValueType(), // Return type is JS value
+                                                               false // Not varargs
+        );
+
+        currentFunction = llvm::Function::Create(mainType, llvm::Function::ExternalLinkage, "main", module.get());
+
+        // Create a basic block for the entry point
+        llvm::BasicBlock *entryBlock = llvm::BasicBlock::Create(*context, "entry", currentFunction);
+        builder->SetInsertPoint(entryBlock);
+
+        // Visit the program statements
+        visitProgram(program);
+
+        // If the last statement is not a return, add an implicit return undefined
+        llvm::BasicBlock *currentBlock = builder->GetInsertBlock();
+        if (currentBlock->empty() || !currentBlock->back().isTerminator()) {
+            builder->CreateRet(createJSUndefined());
+        }
+
+        // Verify the function
+        if (llvm::verifyFunction(*currentFunction, &llvm::errs())) {
+            std::cerr << "Error in function verification" << std::endl;
+            return false;
+        }
+
+        // Update codegen time
+        auto codegenEndTime = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> codegenElapsed = codegenEndTime - codegenStartTime;
+        totalCodegenTime += std::chrono::duration_cast<std::chrono::milliseconds>(codegenElapsed);
+
+        // Update total time
+        auto endTime = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> elapsed = endTime - startTime;
+        totalCompileTime += std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
+
+        // Update memory statistics
+        size_t memAfter = getCurrentMemoryUsage();
+        cumulativeMemoryDelta += (memAfter > memBefore) ? (memAfter - memBefore) : 0;
+        updatePeakMemory();
+
+        return true;
+    } catch (const std::exception &e) {
+        std::cerr << "Exception during compilation: " << e.what() << std::endl;
+
+        // Update memory statistics even on failure
+        updatePeakMemory();
+
         return false;
     }
-
-    // Set insert point to the entry block
-    llvm::BasicBlock *entryBB = &mainFunc->getEntryBlock();
-    builder->SetInsertPoint(entryBB);
-
-    // Visit all statements in the program
-    for (const auto &stmt: program.statements) {
-        stmt->accept(*this);
-    }
-
-    // Return 0 from main
-    builder->CreateRet(llvm::ConstantInt::get(llvm::Type::getInt32Ty(*context), 0));
-
-    // Verify the module
-    std::string errorMessage;
-    llvm::raw_string_ostream errorStream(errorMessage);
-    if (llvm::verifyModule(*module, &errorStream)) {
-        std::cerr << "Error verifying module: " << errorMessage << std::endl;
-        return false;
-    }
-
-    return true;
 }
 
 bool LLVMBackend::optimize(int level) {
-    if (level <= 0)
+    if (level <= 0) {
         return true; // No optimization
-
-    // Create the optimization pipeline
-    llvm::PassBuilder passBuilder;
-
-    // Create analysis managers
-    llvm::LoopAnalysisManager lam;
-    llvm::FunctionAnalysisManager fam;
-    llvm::CGSCCAnalysisManager cgam;
-    llvm::ModuleAnalysisManager mam;
-
-    // Register the analysis managers
-    passBuilder.registerModuleAnalyses(mam);
-    passBuilder.registerCGSCCAnalyses(cgam);
-    passBuilder.registerFunctionAnalyses(fam);
-    passBuilder.registerLoopAnalyses(lam);
-    passBuilder.crossRegisterProxies(lam, fam, cgam, mam);
-
-    // Create the optimization pipeline based on the optimization level
-    llvm::OptimizationLevel optLevel;
-    switch (level) {
-        case 1:
-            optLevel = llvm::OptimizationLevel::O1;
-            break;
-        case 2:
-            optLevel = llvm::OptimizationLevel::O2;
-            break;
-        default:
-            optLevel = llvm::OptimizationLevel::O3;
-            break;
     }
 
-    // Create the pass manager
-    llvm::ModulePassManager mpm = passBuilder.buildPerModuleDefaultPipeline(optLevel);
+    // Start timing
+    auto startTime = std::chrono::high_resolution_clock::now();
 
-    // Run the passes
-    mpm.run(*module, mam);
+    // Create pass managers
+    llvm::legacy::FunctionPassManager funcPM(module.get());
+    llvm::legacy::PassManager modulePM;
+
+    // Add optimization passes based on level
+    if (level >= 1) {
+        // Basic optimizations
+        funcPM.add(llvm::createInstructionCombiningPass()); // Combine similar instructions
+        funcPM.add(llvm::createReassociatePass()); // Reassociate expressions
+        funcPM.add(llvm::createGVNPass()); // Global value numbering
+        funcPM.add(llvm::createCFGSimplificationPass()); // Simplify the control flow graph
+    }
+
+    if (level >= 2) {
+        // More aggressive optimizations
+        modulePM.add(llvm::createFunctionInliningPass()); // Function inlining
+        modulePM.add(llvm::createGlobalDCEPass()); // Remove dead global variables/functions
+        modulePM.add(llvm::createConstantMergePass()); // Merge duplicate global constants
+    }
+
+    if (level >= 3) {
+        // Very aggressive optimizations
+        funcPM.add(llvm::createTailCallEliminationPass()); // Eliminate tail recursion
+        funcPM.add(llvm::createJumpThreadingPass()); // Thread branches through conditions
+        funcPM.add(llvm::createDeadStoreEliminationPass()); // Remove dead stores
+        modulePM.add(llvm::createAggressiveDCEPass()); // Aggressive dead code elimination
+    }
+
+    // Run function-level optimizations
+    funcPM.doInitialization();
+    for (auto &F: *module) {
+        if (!F.isDeclaration()) {
+            funcPM.run(F);
+        }
+    }
+    funcPM.doFinalization();
+
+    // Run module-level optimizations
+    modulePM.run(*module);
+
+    // Record optimization time
+    auto endTime = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> elapsed = endTime - startTime;
+    totalOptimizationTime += std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
+
+    // Update memory statistics
+    updatePeakMemory();
 
     return true;
 }
 
 std::string LLVMBackend::getIR() const {
-    std::string ir;
-    llvm::raw_string_ostream irStream(ir);
-    module->print(irStream, nullptr);
-    return ir;
+    std::string output;
+    llvm::raw_string_ostream stream(output);
+    module->print(stream, nullptr);
+    return output;
 }
 
 bool LLVMBackend::writeIR(const std::string &filename) const {
@@ -255,6 +402,113 @@ bool LLVMBackend::writeIR(const std::string &filename) const {
 
     module->print(fileStream, nullptr);
     return true;
+}
+
+bool LLVMBackend::initializeJIT() {
+    static bool initialized = false;
+
+    if (!initialized) {
+        // Initialize LLVM targets
+        llvm::InitializeNativeTarget();
+        llvm::InitializeNativeTargetAsmPrinter();
+        llvm::InitializeNativeTargetAsmParser();
+
+        initialized = true;
+    }
+
+    // Create a new JIT compiler instance
+    auto jitBuilder = llvm::orc::LLJITBuilder();
+    auto jitResult = jitBuilder.create();
+
+    if (!jitResult) {
+        std::cerr << "Failed to create JIT: " << toString(jitResult.takeError()) << std::endl;
+        return false;
+    }
+
+    jit = std::move(*jitResult);
+    return true;
+}
+
+double LLVMBackend::executeJIT() {
+    // Start timing
+    auto startTime = std::chrono::high_resolution_clock::now();
+
+    if (!initializeJIT()) {
+        return 0.0;
+    }
+
+    try {
+        // Get a thread-safe module
+        auto threadSafeModule = llvm::orc::ThreadSafeModule(std::move(module), std::move(context));
+
+        // Add the module to the JIT
+        if (auto err = jit->addIRModule(std::move(threadSafeModule))) {
+            std::cerr << "Error adding module to JIT: " << toString(std::move(err)) << std::endl;
+            return 0.0;
+        }
+
+        // Look up the main function
+        auto mainSymbol = jit->lookup("main");
+        if (!mainSymbol) {
+            std::cerr << "Could not find main function: " << toString(mainSymbol.takeError()) << std::endl;
+            return 0.0;
+        }
+
+        // Get function pointer to main
+        auto mainFn = reinterpret_cast<uint64_t (*)()>(mainSymbol->getValue());
+
+        // Execute the function
+        uint64_t result = mainFn();
+
+        // Record JIT execution time
+        auto endTime = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> elapsed = endTime - startTime;
+        totalJITTime += std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
+
+        // Update memory statistics
+        updatePeakMemory();
+
+        // Convert the result back based on the type
+        if ((result & js_value::TAG_MASK) != js_value::QUIET_NAN) {
+            // It's a double (not boxed)
+            return *reinterpret_cast<double *>(&result);
+        } else {
+            // It's a boxed value, we'll just return the payload as double
+            js_value::JSValueTag tag = js_value::getTag(result);
+            uint64_t payload = js_value::getPayload(result);
+
+            switch (tag) {
+                case js_value::JS_TAG_BOOLEAN:
+                    return payload ? 1.0 : 0.0;
+                case js_value::JS_TAG_NUMBER:
+                    // Should not happen as numbers aren't boxed
+                    return 0.0;
+                default:
+                    // For other types, just return the payload as double
+                    return static_cast<double>(payload);
+            }
+        }
+    } catch (const std::exception &e) {
+        std::cerr << "Exception during JIT execution: " << e.what() << std::endl;
+
+        // Update memory statistics even on failure
+        updatePeakMemory();
+
+        return 0.0;
+    }
+}
+
+bool LLVMBackend::createExecutable(const std::string &filename) {
+    // Not implemented yet - this would require additional code to emit
+    // an object file and link it into an executable.
+    std::cerr << "createExecutable not implemented yet" << std::endl;
+    return false;
+}
+
+llvm::AllocaInst *LLVMBackend::createEntryBlockAlloca(llvm::Function *func, const std::string &name) {
+    // Create allocas in the entry block for better optimization
+    llvm::IRBuilder<> tempBuilder(&func->getEntryBlock(), func->getEntryBlock().begin());
+    return tempBuilder.CreateAlloca(typeMapping.getJSValueType(), nullptr, name);
 }
 
 // Helper methods for code generation
@@ -326,6 +580,133 @@ llvm::Value *LLVMBackend::extractJSTag(llvm::Value *value) {
 llvm::Value *LLVMBackend::extractJSPayload(llvm::Value *value) {
     llvm::Value *payloadMask = llvm::ConstantInt::get(typeMapping.getJSValueType(), PAYLOAD_MASK);
     return builder->CreateAnd(value, payloadMask, "js_payload");
+}
+
+// Helper methods for method cache and expression value cache
+
+llvm::Value *LLVMBackend::getFromMethodCache(llvm::Value *objectTypeTag, const std::string &methodName) {
+    // First check if the tag is a constant
+    llvm::ConstantInt *constTag = llvm::dyn_cast<llvm::ConstantInt>(objectTypeTag);
+    if (!constTag) {
+        // For dynamic tags, we'll need to use a runtime lookup
+        return nullptr;
+    }
+
+    // For constant tags, we can do a compile-time lookup in our cache
+    uint64_t tagValue = constTag->getZExtValue();
+    MethodCacheKey key = {tagValue, methodName};
+
+    auto it = methodCache.find(key);
+    if (it != methodCache.end()) {
+        return it->second;
+    }
+
+    return nullptr;
+}
+
+void LLVMBackend::storeInMethodCache(llvm::Value *objectTypeTag, const std::string &methodName, llvm::Value *method) {
+    // Only cache methods for constant object types
+    llvm::ConstantInt *constTag = llvm::dyn_cast<llvm::ConstantInt>(objectTypeTag);
+    if (!constTag) {
+        return;
+    }
+
+    // Store in the compile-time cache
+    uint64_t tagValue = constTag->getZExtValue();
+    MethodCacheKey key = {tagValue, methodName};
+    methodCache[key] = method;
+}
+
+llvm::Value *LLVMBackend::getFromExprCache(const Expression *expr) {
+    auto it = exprValueCache.find(expr);
+    if (it != exprValueCache.end()) {
+        return it->second;
+    }
+    return nullptr;
+}
+
+void LLVMBackend::storeInExprCache(const Expression *expr, llvm::Value *value) { exprValueCache[expr] = value; }
+
+void LLVMBackend::clearExprCache() { exprValueCache.clear(); }
+
+// Method lookup and dynamic dispatch implementation
+llvm::Value *LLVMBackend::lookupMethod(llvm::Value *object, const std::string &methodName) {
+    // Extract the object type tag for type-based method lookup
+    llvm::Value *objectTypeTag = extractJSTag(object);
+
+    // Check if the method is already in the cache
+    llvm::Value *cachedMethod = getFromMethodCache(objectTypeTag, methodName);
+    if (cachedMethod) {
+        return cachedMethod;
+    }
+
+    // Create method name as a string constant
+    llvm::Value *methodNameStr = builder->CreateGlobalStringPtr(methodName, "method_name");
+
+    // Call runtime function to look up the method
+    llvm::Function *lookupFunc = module->getFunction("js_lookup_method");
+    llvm::Value *args[] = {object, methodNameStr};
+    llvm::Value *method = builder->CreateCall(lookupFunc, args, "method_lookup");
+
+    // Store the method in the cache for future lookups
+    storeInMethodCache(objectTypeTag, methodName, method);
+
+    return method;
+}
+
+llvm::Value *LLVMBackend::dynamicDispatch(llvm::Value *method, llvm::Value *object,
+                                          const std::vector<llvm::Value *> &args) {
+    // Create an array of arguments for the call
+    std::vector<llvm::Value *> callArgs;
+
+    // First argument is always the 'this' object
+    callArgs.push_back(object);
+
+    // Add the rest of the arguments
+    for (auto arg: args) {
+        callArgs.push_back(arg);
+    }
+
+    // Verify the method is a function
+    llvm::Value *isFunction = typeMapping.isFunction(method, *builder);
+
+    // Create basic blocks for function call and error handling
+    llvm::Function *currentFunc = builder->GetInsertBlock()->getParent();
+    llvm::BasicBlock *callBlock = llvm::BasicBlock::Create(*context, "method_call", currentFunc);
+    llvm::BasicBlock *errorBlock = llvm::BasicBlock::Create(*context, "method_error", currentFunc);
+    llvm::BasicBlock *mergeBlock = llvm::BasicBlock::Create(*context, "method_merge", currentFunc);
+
+    // Branch based on the type check
+    builder->CreateCondBr(isFunction, callBlock, errorBlock);
+
+    // Call block - function exists, make the call
+    builder->SetInsertPoint(callBlock);
+
+    // Use CallInst::Create to call the function pointer
+    llvm::Value *callResult = builder->CreateCall(method, callArgs, "method_result");
+    builder->CreateBr(mergeBlock);
+
+    // Error block - method not found or not a function
+    builder->SetInsertPoint(errorBlock);
+
+    // Get runtime error function
+    llvm::Function *errorFunc = module->getFunction("js_throw_type_error");
+    llvm::Value *errorMsg = builder->CreateGlobalStringPtr("Method is not a function", "error_msg");
+    builder->CreateCall(errorFunc, {errorMsg});
+
+    // Return undefined in case of error
+    llvm::Value *undefinedValue = createJSUndefined();
+    builder->CreateBr(mergeBlock);
+
+    // Merge block
+    builder->SetInsertPoint(mergeBlock);
+
+    // Create PHI node to merge results
+    llvm::PHINode *result = builder->CreatePHI(typeMapping.getJSValueType(), 2, "dispatch_result");
+    result->addIncoming(callResult, callBlock);
+    result->addIncoming(undefinedValue, errorBlock);
+
+    return result;
 }
 
 // Implementation of visitor methods for expressions
@@ -523,50 +904,126 @@ llvm::Value *LLVMBackend::visitLogicalExpr(const LogicalExpr &expr) {
 }
 
 llvm::Value *LLVMBackend::visitCallExpr(const CallExpr &expr) {
-    // Evaluate the callee
-    llvm::Value *callee = expr.callee->accept(*this);
+    // Check if this is a method call (callee is a GetExpr)
+    const GetExpr *getExpr = dynamic_cast<const GetExpr *>(expr.callee.get());
 
-    // Evaluate the arguments
-    std::vector<llvm::Value *> args;
-    for (const auto &arg: expr.arguments) {
-        args.push_back(arg->accept(*this));
-    }
+    if (getExpr) {
+        // This is a method call: obj.method()
+        llvm::Value *object = visit(*getExpr->object);
 
-    // Create an array to hold the arguments
-    llvm::Value *argCount = llvm::ConstantInt::get(llvm::Type::getInt32Ty(*context), args.size());
-    llvm::AllocaInst *argsArray = nullptr;
+        // Look up the method on the object
+        llvm::Value *method = lookupMethod(object, getExpr->name);
 
-    if (!args.empty()) {
-        // Allocate space for the arguments array
-        argsArray = builder->CreateAlloca(
-                types.jsValueType, llvm::ConstantInt::get(llvm::Type::getInt32Ty(*context), args.size()), "args_array");
-
-        // Store each argument in the array
-        for (size_t i = 0; i < args.size(); i++) {
-            llvm::Value *argPtr = builder->CreateGEP(types.jsValueType, argsArray,
-                                                     llvm::ConstantInt::get(llvm::Type::getInt32Ty(*context), i),
-                                                     "arg_ptr_" + std::to_string(i));
-            builder->CreateStore(args[i], argPtr);
+        // Visit all arguments
+        std::vector<llvm::Value *> args;
+        for (const auto &arg: expr.arguments) {
+            args.push_back(visit(*arg));
         }
-    } else {
-        // No arguments, just create a null pointer
-        argsArray = builder->CreateAlloca(types.jsValueType,
-                                          llvm::ConstantInt::get(llvm::Type::getInt32Ty(*context), 0), "empty_args");
-    }
 
-    // Call the function
-    return builder->CreateCall(runtimeFunctions["js_call_function"], {callee, argCount, argsArray});
+        // Perform dynamic dispatch
+        return dynamicDispatch(method, object, args);
+    } else {
+        // Regular function call
+        llvm::Value *callee = visit(*expr.callee);
+
+        // Check if the callee is a function
+        llvm::Value *isFunction = typeMapping.isFunction(callee, *builder);
+
+        // Function arguments
+        std::vector<llvm::Value *> args;
+        for (const auto &arg: expr.arguments) {
+            args.push_back(visit(*arg));
+        }
+
+        // Create blocks for function call and error handling
+        llvm::Function *currentFunc = builder->GetInsertBlock()->getParent();
+        llvm::BasicBlock *callBlock = llvm::BasicBlock::Create(*context, "function_call", currentFunc);
+        llvm::BasicBlock *errorBlock = llvm::BasicBlock::Create(*context, "function_error", currentFunc);
+        llvm::BasicBlock *mergeBlock = llvm::BasicBlock::Create(*context, "function_merge", currentFunc);
+
+        // Branch based on type check
+        builder->CreateCondBr(isFunction, callBlock, errorBlock);
+
+        // Call block
+        builder->SetInsertPoint(callBlock);
+        llvm::Value *undefinedThis = createJSUndefined(); // 'this' is undefined for regular calls
+        std::vector<llvm::Value *> callArgs = {undefinedThis};
+        callArgs.insert(callArgs.end(), args.begin(), args.end());
+
+        llvm::Value *callResult = builder->CreateCall(callee, callArgs, "call_result");
+        builder->CreateBr(mergeBlock);
+
+        // Error block
+        builder->SetInsertPoint(errorBlock);
+        llvm::Function *errorFunc = module->getFunction("js_throw_type_error");
+        llvm::Value *errorMsg = builder->CreateGlobalStringPtr("Not a function", "error_msg");
+        builder->CreateCall(errorFunc, {errorMsg});
+        llvm::Value *undefinedValue = createJSUndefined();
+        builder->CreateBr(mergeBlock);
+
+        // Merge block
+        builder->SetInsertPoint(mergeBlock);
+        llvm::PHINode *result = builder->CreatePHI(typeMapping.getJSValueType(), 2, "call_result_phi");
+        result->addIncoming(callResult, callBlock);
+        result->addIncoming(undefinedValue, errorBlock);
+
+        return result;
+    }
 }
 
 llvm::Value *LLVMBackend::visitGetExpr(const GetExpr &expr) {
-    // Evaluate the object
-    llvm::Value *object = expr.object->accept(*this);
+    // Check if we have a cached value for this expression
+    llvm::Value *cachedValue = getFromExprCache(&expr);
+    if (cachedValue) {
+        return cachedValue;
+    }
 
-    // Create a string constant for the property name
-    llvm::Constant *propName = builder->CreateGlobalStringPtr(expr.name.lexeme, "prop_name");
+    // Visit the object
+    llvm::Value *object = visit(*expr.object);
 
-    // Call the js_get_property runtime function
-    return builder->CreateCall(runtimeFunctions["js_get_property"], {object, propName});
+    // Check if the object is valid (not null or undefined)
+    llvm::Value *isNull = typeMapping.isNull(object, *builder);
+    llvm::Value *isUndefined = typeMapping.isUndefined(object, *builder);
+    llvm::Value *isInvalid = builder->CreateOr(isNull, isUndefined, "is_invalid");
+
+    // Create blocks for property access and error handling
+    llvm::Function *currentFunc = builder->GetInsertBlock()->getParent();
+    llvm::BasicBlock *accessBlock = llvm::BasicBlock::Create(*context, "property_access", currentFunc);
+    llvm::BasicBlock *errorBlock = llvm::BasicBlock::Create(*context, "property_error", currentFunc);
+    llvm::BasicBlock *mergeBlock = llvm::BasicBlock::Create(*context, "property_merge", currentFunc);
+
+    // Branch based on validity check
+    builder->CreateCondBr(isInvalid, errorBlock, accessBlock);
+
+    // Access block - object is valid
+    builder->SetInsertPoint(accessBlock);
+    llvm::Value *propertyNameStr = builder->CreateGlobalStringPtr(expr.name, "property_name");
+
+    // Call runtime function to get the property
+    llvm::Function *getPropFunc = module->getFunction("js_get_property");
+    llvm::Value *args[] = {object, propertyNameStr};
+    llvm::Value *property = builder->CreateCall(getPropFunc, args, "property_value");
+    builder->CreateBr(mergeBlock);
+
+    // Error block - object is null or undefined
+    builder->SetInsertPoint(errorBlock);
+    llvm::Function *errorFunc = module->getFunction("js_throw_type_error");
+    llvm::Value *errorMsg = builder->CreateGlobalStringPtr(
+            "Cannot read property '" + expr.name + "' of null or undefined", "error_msg");
+    builder->CreateCall(errorFunc, {errorMsg});
+    llvm::Value *undefinedValue = createJSUndefined();
+    builder->CreateBr(mergeBlock);
+
+    // Merge block
+    builder->SetInsertPoint(mergeBlock);
+    llvm::PHINode *result = builder->CreatePHI(typeMapping.getJSValueType(), 2, "get_result");
+    result->addIncoming(property, accessBlock);
+    result->addIncoming(undefinedValue, errorBlock);
+
+    // Cache the result
+    storeInExprCache(&expr, result);
+
+    return result;
 }
 
 llvm::Value *LLVMBackend::visitSetExpr(const SetExpr &expr) {

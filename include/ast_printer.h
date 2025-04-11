@@ -47,7 +47,11 @@ public:
     void visitArrayExpr(const ArrayExpr &expr) override;
     void visitObjectExpr(const ObjectExpr &expr) override;
     void visitArrowFunctionExpr(const ArrowFunctionExpr &expr) override;
-    std::initializer_list<char> print(const std::shared_ptr<Program> & shared);
+    void visitAssignExpr(const AssignExpr &expr) override;
+    void visitLogicalExpr(const LogicalExpr &expr) override;
+    void visitGroupingExpr(const GroupingExpr &expr) override;
+
+    std::string print(const Program *program);
 };
 
 #endif // AST_PRINTER_H

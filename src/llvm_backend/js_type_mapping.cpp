@@ -5,38 +5,47 @@
 JSTypeMapping::JSTypeMapping(llvm::LLVMContext &context) : context(context) {
     // Initialize basic types
     jsValueType = llvm::Type::getInt64Ty(context);
-    doubleType = llvm::Type::getDoubleTy(context);
-    stringPtrType = llvm::Type::getInt8PtrTy(context);
+    stringPtrType = llvm::PointerType::get(llvm::Type::getInt8Ty(context), 0);
 
-    // Create complex types
-    // Object type with type tag and properties
-    objectType = llvm::StructType::create(context, "js_object_t");
+    // Create object type (simplified version)
+    objectType = llvm::StructType::create(context, "JSObject");
+    objectType->setBody({
+            llvm::Type::getInt32Ty(context), // Type tag
+            llvm::PointerType::get(jsValueType, 0) // Pointer to properties array
+    });
 
-    // Array type with elements vector
-    arrayType = llvm::StructType::create(context, "js_array_t");
+    // Create array type
+    arrayType = llvm::StructType::create(context, "JSArray");
+    arrayType->setBody({
+            llvm::Type::getInt32Ty(context), // Length
+            llvm::PointerType::get(jsValueType, 0) // Pointer to elements
+    });
 
-    // Function type: jsValue(*)(int argc, jsValue* argv)
-    std::vector<llvm::Type *> functionParams = {llvm::Type::getInt32Ty(context),
-                                                llvm::PointerType::getUnqual(jsValueType)};
-    functionType = llvm::FunctionType::get(jsValueType, functionParams, false);
-
-    // Initialize constants for bit operations
-    tagMask = llvm::ConstantInt::get(jsValueType, TAG_MASK);
-    payloadMask = llvm::ConstantInt::get(jsValueType, PAYLOAD_MASK);
-    quietNaN = llvm::ConstantInt::get(jsValueType, QUIET_NAN);
-
-    // Initialize tag constants
-    tagConstants[JS_TAG_NUMBER] = llvm::ConstantInt::get(jsValueType, JS_TAG_NUMBER << TAG_SHIFT);
-    tagConstants[JS_TAG_UNDEFINED] = llvm::ConstantInt::get(jsValueType, JS_TAG_UNDEFINED << TAG_SHIFT);
-    tagConstants[JS_TAG_NULL] = llvm::ConstantInt::get(jsValueType, JS_TAG_NULL << TAG_SHIFT);
-    tagConstants[JS_TAG_BOOLEAN] = llvm::ConstantInt::get(jsValueType, JS_TAG_BOOLEAN << TAG_SHIFT);
-    tagConstants[JS_TAG_STRING] = llvm::ConstantInt::get(jsValueType, JS_TAG_STRING << TAG_SHIFT);
-    tagConstants[JS_TAG_OBJECT] = llvm::ConstantInt::get(jsValueType, JS_TAG_OBJECT << TAG_SHIFT);
-    tagConstants[JS_TAG_FUNCTION] = llvm::ConstantInt::get(jsValueType, JS_TAG_FUNCTION << TAG_SHIFT);
+    // Create function type (for JS functions)
+    functionType = llvm::FunctionType::get(jsValueType, // Return type is a JS value
+                                           {
+                                                   llvm::PointerType::get(jsValueType, 0), // this pointer
+                                                   llvm::PointerType::get(jsValueType, 0) // arguments array
+                                           },
+                                           false // Not varargs
+    );
 }
 
 llvm::Type *JSTypeMapping::getLLVMType(Expression::Type type) const {
-    // In our NaN-boxing scheme, all JS values are represented as i64
+    switch (type) {
+        case Expression::Type::Number:
+        case Expression::Type::Boolean:
+        case Expression::Type::String:
+        case Expression::Type::Object:
+        case Expression::Type::Undefined:
+        case Expression::Type::Null:
+        case Expression::Type::Function:
+        case Expression::Type::Any:
+            // All JavaScript values use the same type with NaN-boxing
+            return jsValueType;
+    }
+
+    // Default case, should never happen
     return jsValueType;
 }
 
@@ -50,57 +59,49 @@ llvm::FunctionType *JSTypeMapping::getFunctionType() const { return functionType
 
 llvm::PointerType *JSTypeMapping::getStringPtrType() const { return stringPtrType; }
 
+llvm::Value *JSTypeMapping::checkTag(llvm::Value *value, js_value::JSValueTag tag, llvm::IRBuilder<> &builder) const {
+    // Constants for checking
+    auto tagMask = llvm::ConstantInt::get(jsValueType, js_value::TAG_MASK);
+    auto tagValue = llvm::ConstantInt::get(jsValueType, static_cast<uint64_t>(tag) << js_value::TAG_SHIFT);
+    auto quietNaN = llvm::ConstantInt::get(jsValueType, js_value::QUIET_NAN);
+
+    // For JS_TAG_NUMBER, we need to check if it's NOT a NaN-boxed value
+    if (tag == js_value::JS_TAG_NUMBER) {
+        // Extract the tag bits: value & TAG_MASK
+        auto extractedTag = builder.CreateAnd(value, tagMask);
+        // Check that it's not QUIET_NAN (meaning it's a regular double)
+        return builder.CreateICmpNE(extractedTag, quietNaN);
+    } else {
+        // Extract the tag bits: (value & TAG_MASK) == (tag << TAG_SHIFT)
+        auto extractedTag = builder.CreateAnd(value, tagMask);
+        return builder.CreateICmpEQ(extractedTag, tagValue);
+    }
+}
+
 llvm::Value *JSTypeMapping::isNumber(llvm::Value *value, llvm::IRBuilder<> &builder) const {
-    // Extract the tag from the value
-    llvm::Value *tag = builder.CreateAnd(value, tagMask, "tag");
-
-    // Check if it's a number (either a double value or has a number tag)
-    // For doubles, we need to check the exponent bits pattern
-    llvm::Value *exponentMask = llvm::ConstantInt::get(jsValueType, 0x7FF0000000000000ULL);
-    llvm::Value *exponentBits = builder.CreateAnd(value, exponentMask, "exponent_bits");
-    llvm::Value *isNotNaN = builder.CreateICmpNE(exponentBits, exponentMask, "is_not_nan");
-
-    // Either it's not a NaN or it has the number tag
-    llvm::Value *hasNumberTag = builder.CreateICmpEQ(tag, tagConstants[JS_TAG_NUMBER], "has_number_tag");
-    return builder.CreateOr(isNotNaN, hasNumberTag, "is_number");
+    return checkTag(value, js_value::JS_TAG_NUMBER, builder);
 }
 
 llvm::Value *JSTypeMapping::isString(llvm::Value *value, llvm::IRBuilder<> &builder) const {
-    // Extract the tag from the value
-    llvm::Value *tag = builder.CreateAnd(value, tagMask, "tag");
-
-    // Check if it has a string tag
-    return builder.CreateICmpEQ(tag, tagConstants[JS_TAG_STRING], "is_string");
-}
-
-llvm::Value *JSTypeMapping::isBoolean(llvm::Value *value, llvm::IRBuilder<> &builder) const {
-    // Extract the tag from the value
-    llvm::Value *tag = builder.CreateAnd(value, tagMask, "tag");
-
-    // Check if it has a boolean tag
-    return builder.CreateICmpEQ(tag, tagConstants[JS_TAG_BOOLEAN], "is_boolean");
+    return checkTag(value, js_value::JS_TAG_STRING, builder);
 }
 
 llvm::Value *JSTypeMapping::isObject(llvm::Value *value, llvm::IRBuilder<> &builder) const {
-    // Extract the tag from the value
-    llvm::Value *tag = builder.CreateAnd(value, tagMask, "tag");
-
-    // Check if it has an object tag
-    return builder.CreateICmpEQ(tag, tagConstants[JS_TAG_OBJECT], "is_object");
+    return checkTag(value, js_value::JS_TAG_OBJECT, builder);
 }
 
-llvm::Value *JSTypeMapping::isUndefined(llvm::Value *value, llvm::IRBuilder<> &builder) const {
-    // Extract the tag from the value
-    llvm::Value *tag = builder.CreateAnd(value, tagMask, "tag");
+llvm::Value *JSTypeMapping::isFunction(llvm::Value *value, llvm::IRBuilder<> &builder) const {
+    return checkTag(value, js_value::JS_TAG_FUNCTION, builder);
+}
 
-    // Check if it has an undefined tag
-    return builder.CreateICmpEQ(tag, tagConstants[JS_TAG_UNDEFINED], "is_undefined");
+llvm::Value *JSTypeMapping::isBoolean(llvm::Value *value, llvm::IRBuilder<> &builder) const {
+    return checkTag(value, js_value::JS_TAG_BOOLEAN, builder);
 }
 
 llvm::Value *JSTypeMapping::isNull(llvm::Value *value, llvm::IRBuilder<> &builder) const {
-    // Extract the tag from the value
-    llvm::Value *tag = builder.CreateAnd(value, tagMask, "tag");
+    return checkTag(value, js_value::JS_TAG_NULL, builder);
+}
 
-    // Check if it has a null tag
-    return builder.CreateICmpEQ(tag, tagConstants[JS_TAG_NULL], "is_null");
+llvm::Value *JSTypeMapping::isUndefined(llvm::Value *value, llvm::IRBuilder<> &builder) const {
+    return checkTag(value, js_value::JS_TAG_UNDEFINED, builder);
 }

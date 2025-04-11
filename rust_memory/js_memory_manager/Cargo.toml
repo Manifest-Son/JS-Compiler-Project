@@ -16,6 +16,9 @@ parking_lot = "0.12.1"
 
 [dependencies.crossbeam]
 version = "0.8.2"
+
+[dependancies.crossbeam-utils]
+version = "0.8.2"
 features = ["atomic"]
 
 [build-dependencies]

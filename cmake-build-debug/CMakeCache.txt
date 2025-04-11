@@ -345,6 +345,9 @@ JS_Compiler_Final_Project_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 JS_Compiler_Final_Project_SOURCE_DIR:STATIC=C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project
 
+//The directory containing a CMake configuration file for LLVM.
+LLVM_DIR:PATH=LLVM_DIR-NOTFOUND
+
 //Automatically copy dependencies into the output directory for
 // executables.
 VCPKG_APPLOCAL_DEPS:BOOL=ON
@@ -578,7 +581,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=5
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

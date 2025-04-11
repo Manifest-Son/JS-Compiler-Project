@@ -103,26 +103,23 @@ pub extern "C" fn js_create_object(gc_handle: RustGCHandle, obj_type: c_int) -> 
     if gc_handle.is_null() {
         return ptr::null_mut();
     }
-
-    // Safety: We trust the handle to be valid
-    let gc = unsafe { &*(gc_handle as *const GarbageCollector) };
     
-    // Convert C int to JSObjectType enum
-    let obj_type = match obj_type {
-        0 => JSObjectType::Object,
-        1 => JSObjectType::Array,
-        2 => JSObjectType::Function,
-        3 => JSObjectType::String,
-        4 => JSObjectType::Number,
-        5 => JSObjectType::Boolean,
-        6 => JSObjectType::Null,
-        7 => JSObjectType::Undefined,
-        _ => JSObjectType::Object, // Default to plain object
-    };
-    
-    // Create object and get raw pointer
-    let handle = gc.create_object(obj_type);
-    Arc::into_raw(handle.ptr) as *mut JSObject
+    unsafe {
+        let gc = &*(gc_handle);
+        let obj_type = match obj_type {
+            0 => JSObjectType::Object,
+            1 => JSObjectType::Array,
+            2 => JSObjectType::Function,
+            3 => JSObjectType::String,
+            4 => JSObjectType::Number,
+            5 => JSObjectType::Boolean,
+            6 => JSObjectType::Null,
+            _ => JSObjectType::Undefined,
+        };
+        
+        let obj = gc.create_object(obj_type);
+        Box::into_raw(Box::new(obj.ptr)) as *mut JSObject
+    }
 }
 
 /// Release an object handle

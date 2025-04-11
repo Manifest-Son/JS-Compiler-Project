@@ -51,7 +51,7 @@ std::vector<Token> Lexer::tokenize() {
   while (position < source.length()) {
     startToken(); // Track position at start of token
     char current = peek();
-    
+
     if (isspace(current)) {
       skipWhitespace();
     } else if (isIdentifierStart(current)) {
@@ -66,7 +66,8 @@ std::vector<Token> Lexer::tokenize() {
     } else if (current == '(' || current == ')' ||
                current == '{' || current == '}' ||
                current == '[' || current == ']' ||
-               current == ',') {
+               current == ',')
+         {
       // Handle common grouping symbols - add explicit value
       advance();
       std::string symbolStr(1, current);
@@ -95,7 +96,7 @@ void Lexer::startToken() {
     startLine = line;
     startColumn = column;
 }
-
+//Formating in an editor
 // Look at the current character without advancing
 char Lexer::peek() {
   return (position < source.length()) ? source[position] : '\0';
@@ -118,6 +119,7 @@ char Lexer::advance() {
 }
 
 // Match current character with expected
+// It will stop where there is an error to address the error
 bool Lexer::match(char expected) {
   if (peek() != expected) return false;
   advance();
@@ -137,9 +139,10 @@ void Lexer::skipWhitespace() {
   }
 }
 
-// Handle strings with improved error handling
+// This function will handle both single and double quotes
 Token Lexer::string() {
-  char quote = advance(); // Skip the opening quote (can be ' or ")
+    // Skip the opening quote (can be ' or ")
+  char quote = advance();
   size_t start = position;
 
   while (peek() != quote && peek() != '\0') {
@@ -147,25 +150,24 @@ Token Lexer::string() {
       line++;
       column = 1;
     } else if (peek() == '\\' && peekNext() == quote) {
-      // Handle escaped quotes
-      advance(); // Skip the backslash
-      advance(); // Skip the quote
+        //Skip the escaped quote
+      advance();
+      advance();
     }
 
     if (peek() != quote && peek() != '\0') {
       advance();
     }
   }
-
   if (peek() == '\0') {
     std::string message = "Unterminated string";
-    errorReporter.report(ErrorSeverity::ERROR, startLine, startColumn, 
+    errorReporter.report(ErrorSeverity::ERROR, startLine, startColumn,
                          message, errorSuggestions.at("Unterminated string"));
     return errorToken(message);
   }
 
   std::string value = source.substr(start, position - start);
-  advance(); // Skip the closing quote
+  advance();
   return Token(TokenType::STRING, value, startLine, value);
 }
 
@@ -175,13 +177,14 @@ Token Lexer::identifier() {
   while (isIdentifierPart(peek())) advance();
 
   std::string value = source.substr(start, position - start);
-  TokenType type = keywords.count(value) ? TokenType::KEYWORD : TokenType::IDENTIFIER;
+    // Check if the identifier is a keyword
+  TokenType type = keywords.count(value) ? KEYWORD : IDENTIFIER;
 
   // Set bool value for true/false literals
   if (value == "true") {
-    return Token(type, value, line, true);
+    return {type, value, line, true};
   } else if (value == "false") {
-    return Token(type, value, line, false);
+    return {type, value, line, false};
   } else if (value == "null") {
     return Token(type, value, line, std::monostate{});
   } else if (value == "undefined") {
@@ -199,13 +202,13 @@ Token Lexer::number() {
 
   // Handle decimal point
   if (peek() == '.' && isdigit(peekNext())) {
-    advance(); // Consume the '.'
+    advance();
     while (isdigit(peek())) advance();
   }
 
   std::string lexeme = source.substr(start, position - start);
   double value = std::stod(lexeme);
-  return Token(TokenType::NUMBER, lexeme, line, value);
+  return {NUMBER, lexeme, line, value};
 }
 
 // Handle symbols and operators
@@ -257,20 +260,21 @@ Token Lexer::symbol() {
 
 // Handle comments with improved error handling
 Token Lexer::handleComment() {
-  advance(); // Skip the first '/'
+  advance();
 
   if (peek() == '/') {
     // Single-line comment
-    advance(); // Skip the second '/'
+    advance();
     size_t start = position;
 
+      //loop till the end of the line
     while (peek() != '\n' && peek() != '\0') advance();
 
     std::string comment = source.substr(start, position - start);
-    return Token(TokenType::COMMENT, comment, startLine, comment);
+    return {COMMENT, comment, startLine, comment};
   } else if (peek() == '*') {
     // Multi-line comment
-    advance(); // Skip the '*'
+    advance();
     size_t start = position;
     int startLine = line;
 
@@ -280,27 +284,27 @@ Token Lexer::handleComment() {
 
     if (peek() == '\0') {
       std::string message = "Unterminated multi-line comment";
-      errorReporter.report(ErrorSeverity::ERROR, this->startLine, startColumn, 
+      errorReporter.report(ErrorSeverity::ERROR, this->startLine, startColumn,
                            message, errorSuggestions.at("Unterminated multi-line comment"));
       return errorToken(message);
     }
 
     std::string comment = source.substr(start, position - start);
-    advance(); // Skip the '*'
-    advance(); // Skip the '/'
+    advance();
+    advance();
 
-    return Token(TokenType::COMMENT, comment, startLine, comment);
+    return {COMMENT, comment, startLine, comment};
   }
 
   // If we get here, it's just a division operator
-  return Token(TokenType::OPERATOR, "/", startLine, "/");
+  return {OPERATOR, "/", startLine, "/"};
 }
 
 // Handle errors with better reporting
 Token Lexer::errorToken(const std::string& message) {
   // If not already reported by specific handlers
   if (message.find("Unterminated") == std::string::npos) {
-    std::string suggestion = "";
+    std::string suggestion;
     for (const auto& [error, fix] : errorSuggestions) {
       if (message.find(error) != std::string::npos) {
         suggestion = fix;
@@ -309,6 +313,5 @@ Token Lexer::errorToken(const std::string& message) {
     }
     errorReporter.report(ErrorSeverity::ERROR, startLine, startColumn, message, suggestion);
   }
-  
-  return Token(TokenType::ERROR, message, startLine);
+  return {TokenType::ERROR, message, startLine};
 }

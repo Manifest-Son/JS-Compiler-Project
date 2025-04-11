@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <llvm/IR/DerivedTypes.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -566,8 +567,147 @@ extern "C" void *js_alloc(uint64_t size) { return malloc(size); }
 extern "C" void js_free(void *ptr) { free(ptr); }
 
 // JSRuntime implementation
-JSRuntime::JSRuntime() {
-    // Initialize the runtime environment
+JSRuntime::JSRuntime(llvm::LLVMContext &context, llvm::Module *module) : context(context), module(module) {
+    // Initialize the runtime - empty to begin with
+}
+
+llvm::Function *JSRuntime::getFunction(const std::string &name) const {
+    auto it = functions.find(name);
+    if (it != functions.end()) {
+        return it->second;
+    }
+    return nullptr;
+}
+
+void JSRuntime::declareAll() {
+    declareTypeOperations();
+    declareObjectOperations();
+    declareStringOperations();
+    declareArrayOperations();
+    declareArithmeticOperations();
+    declareComparisonOperations();
+    declareControlFlowOperations();
+}
+
+const std::unordered_map<std::string, llvm::Function *> &JSRuntime::getAllFunctions() const { return functions; }
+
+llvm::Function *JSRuntime::declareFunction(const std::string &name, llvm::Type *returnType,
+                                           const std::vector<llvm::Type *> &paramTypes) {
+    // Create function type
+    llvm::FunctionType *funcType = llvm::FunctionType::get(returnType, paramTypes, false);
+
+    // Declare function in the module
+    llvm::Function *func = llvm::Function::Create(funcType, llvm::Function::ExternalLinkage, name, module);
+
+    // Add to our map
+    functions[name] = func;
+
+    return func;
+}
+
+void JSRuntime::declareTypeOperations() {
+    // Common types
+    llvm::Type *jsValueTy = llvm::Type::getInt64Ty(context);
+    llvm::Type *i32Ty = llvm::Type::getInt32Ty(context);
+    llvm::Type *i1Ty = llvm::Type::getInt1Ty(context);
+    llvm::Type *doubleTy = llvm::Type::getDoubleTy(context);
+    llvm::Type *voidTy = llvm::Type::getVoidTy(context);
+    llvm::Type *charPtrTy = llvm::PointerType::get(llvm::Type::getInt8Ty(context), 0);
+
+    // Type operations
+    declareFunction("js_get_type", i32Ty, {jsValueTy});
+    declareFunction("js_typeof", jsValueTy, {jsValueTy});
+    declareFunction("js_value_to_number", doubleTy, {jsValueTy});
+    declareFunction("js_value_to_boolean", i1Ty, {jsValueTy});
+    declareFunction("js_value_to_string", charPtrTy, {jsValueTy});
+
+    // Type conversion
+    declareFunction("js_to_string", jsValueTy, {jsValueTy});
+    declareFunction("js_to_number", jsValueTy, {jsValueTy});
+}
+
+void JSRuntime::declareObjectOperations() {
+    // Common types
+    llvm::Type *jsValueTy = llvm::Type::getInt64Ty(context);
+    llvm::Type *charPtrTy = llvm::PointerType::get(llvm::Type::getInt8Ty(context), 0);
+
+    // Object operations
+    declareFunction("js_create_object", jsValueTy, {});
+    declareFunction("js_set_property", jsValueTy, {jsValueTy, charPtrTy, jsValueTy});
+    declareFunction("js_get_property", jsValueTy, {jsValueTy, charPtrTy});
+    declareFunction("js_has_property", jsValueTy, {jsValueTy, charPtrTy});
+    declareFunction("js_delete_property", jsValueTy, {jsValueTy, charPtrTy});
+}
+
+void JSRuntime::declareStringOperations() {
+    // Common types
+    llvm::Type *jsValueTy = llvm::Type::getInt64Ty(context);
+    llvm::Type *charPtrTy = llvm::PointerType::get(llvm::Type::getInt8Ty(context), 0);
+    llvm::Type *i32Ty = llvm::Type::getInt32Ty(context);
+
+    // String operations
+    declareFunction("js_string_new", jsValueTy, {charPtrTy});
+    declareFunction("js_string_length", i32Ty, {jsValueTy});
+    declareFunction("js_string_concat", jsValueTy, {jsValueTy, jsValueTy});
+    declareFunction("js_string_slice", jsValueTy, {jsValueTy, i32Ty, i32Ty});
+}
+
+void JSRuntime::declareArrayOperations() {
+    // Common types
+    llvm::Type *jsValueTy = llvm::Type::getInt64Ty(context);
+    llvm::Type *i32Ty = llvm::Type::getInt32Ty(context);
+
+    // Array operations
+    declareFunction("js_array_new", jsValueTy, {i32Ty});
+    declareFunction("js_array_get", jsValueTy, {jsValueTy, i32Ty});
+    declareFunction("js_array_set", jsValueTy, {jsValueTy, i32Ty, jsValueTy});
+    declareFunction("js_array_length", i32Ty, {jsValueTy});
+    declareFunction("js_array_push", jsValueTy, {jsValueTy, jsValueTy});
+    declareFunction("js_array_pop", jsValueTy, {jsValueTy});
+}
+
+void JSRuntime::declareArithmeticOperations() {
+    // Common types
+    llvm::Type *jsValueTy = llvm::Type::getInt64Ty(context);
+
+    // Arithmetic operations
+    declareFunction("js_add", jsValueTy, {jsValueTy, jsValueTy});
+    declareFunction("js_subtract", jsValueTy, {jsValueTy, jsValueTy});
+    declareFunction("js_multiply", jsValueTy, {jsValueTy, jsValueTy});
+    declareFunction("js_divide", jsValueTy, {jsValueTy, jsValueTy});
+    declareFunction("js_modulo", jsValueTy, {jsValueTy, jsValueTy});
+    declareFunction("js_negate", jsValueTy, {jsValueTy});
+    declareFunction("js_increment", jsValueTy, {jsValueTy});
+    declareFunction("js_decrement", jsValueTy, {jsValueTy});
+}
+
+void JSRuntime::declareComparisonOperations() {
+    // Common types
+    llvm::Type *jsValueTy = llvm::Type::getInt64Ty(context);
+
+    // Comparison operations
+    declareFunction("js_equals", jsValueTy, {jsValueTy, jsValueTy});
+    declareFunction("js_strict_equals", jsValueTy, {jsValueTy, jsValueTy});
+    declareFunction("js_less_than", jsValueTy, {jsValueTy, jsValueTy});
+    declareFunction("js_less_equal", jsValueTy, {jsValueTy, jsValueTy});
+    declareFunction("js_greater_than", jsValueTy, {jsValueTy, jsValueTy});
+    declareFunction("js_greater_equal", jsValueTy, {jsValueTy, jsValueTy});
+}
+
+void JSRuntime::declareControlFlowOperations() {
+    // Common types
+    llvm::Type *jsValueTy = llvm::Type::getInt64Ty(context);
+    llvm::Type *i32Ty = llvm::Type::getInt32Ty(context);
+    llvm::Type *voidTy = llvm::Type::getVoidTy(context);
+
+    // Function operations
+    declareFunction("js_call", jsValueTy, {jsValueTy, jsValueTy, llvm::PointerType::get(jsValueTy, 0), i32Ty});
+
+    // Console output (for debugging)
+    declareFunction("js_console_log", voidTy, {jsValueTy});
+
+    // Memory management
+    declareFunction("js_gc_collect", voidTy, {});
 }
 
 JSRuntime::~JSRuntime() {

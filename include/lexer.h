@@ -31,10 +31,9 @@ class Lexer {
     Token string();
     Token symbol();
     Token number();
-    Token handleComment(); // New method for comments
+    Token handleComment();
     Token errorToken(const std::string& message);
-    bool match(char expected); // New helper method for matching characters
-    
+    bool match(char expected);
     // Track token start position for error reporting
     int startLine;
     int startColumn;

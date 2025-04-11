@@ -299,8 +299,8 @@ CMAKE_STRIP:FILEPATH=C:/Program Files/JetBrains/CLion 2024.3.1.1/bin/mingw/bin/s
 //Path to a program.
 CMAKE_TAPI:FILEPATH=CMAKE_TAPI-NOTFOUND
 
-//The CMake toolchain file
-CMAKE_TOOLCHAIN_FILE:FILEPATH=C:/Users/YVONNE/.vcpkg-clion/vcpkg/scripts/buildsystems/vcpkg.cmake
+//No help, variable specified on the command line.
+CMAKE_TOOLCHAIN_FILE:UNINITIALIZED=C:\Users\YVONNE\.vcpkg-clion\vcpkg\scripts\buildsystems\vcpkg.cmake
 
 //If this value is on, makefiles will be generated without the
 // .SILENT directive, and all commands will be echoed to the console
@@ -344,6 +344,9 @@ JS_Compiler_Final_Project_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 JS_Compiler_Final_Project_SOURCE_DIR:STATIC=C:/Users/YVONNE/Desktop/JS_Compiler_Final_Project
+
+//The directory containing a CMake configuration file for LLVM.
+LLVM_DIR:PATH=LLVM_DIR-NOTFOUND
 
 //Automatically copy dependencies into the output directory for
 // executables.
@@ -578,7 +581,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=5
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
