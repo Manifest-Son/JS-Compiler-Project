@@ -36,8 +36,8 @@ The compiler consists of several key components:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/js-compiler.git
-cd js-compiler
+git clone https://github.com/Manifest-Son/JS-Compiler-Project.git
+cd JS-Compiler-Project
 
 # Create build directory
 mkdir build
